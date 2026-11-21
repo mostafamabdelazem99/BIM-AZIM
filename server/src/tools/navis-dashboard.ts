@@ -6,6 +6,13 @@ import { defineTool } from "./types.js";
  * exports a dashboard definition (pages/visuals/3D viewer config) to a .pbit Power BI template
  * bound to the federated model, clash results, and element properties. No external account
  * needed — this is local file generation, unlike the Google Sheets/Notion/Power-BI-embed tools.
+ *
+ * Known gap: the ported Navisworks plugin (plugins/Navisworks/BimAzimNavisPlugin) currently
+ * excludes its Dashboard/ implementation from compilation — the JSON config contract types
+ * (DashboardConfig, PageSpec, VisualSpec, ...) that BIM-Bot's dashboard code depends on aren't
+ * present anywhere in the BIM-Bot source this was ported from (a gap in the upstream repo, not
+ * a porting mistake). These 7 tools are defined and will reach the plugin, but it currently
+ * replies "Unknown Navisworks command" for all of them until that contract is written.
  */
 export const navisDashboardTools = [
   defineTool({
