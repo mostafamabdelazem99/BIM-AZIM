@@ -1,0 +1,20 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0",
+    "FriendlyName": "BimAzimMCPBridge",
+    "Description": "HTTP bridge on port 30012 for MCP (Model Context Protocol) — enables viewport screenshots, console commands, editor notifications, project info, and asset import from AI assistants.",
+    "Category": "Editor",
+    "CreatedBy": "BIM-AZIM",
+    "CanContainContent": false,
+    "IsBetaVersion": false,
+    "IsExperimentalVersion": false,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "BimAzimMCPBridge",
+            "Type": "Editor",
+            "LoadingPhase": "PostEngineInit"
+        }
+    ]
+}

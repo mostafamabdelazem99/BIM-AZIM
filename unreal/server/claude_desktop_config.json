@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "BIM-AZIM-Unreal": {
+      "command": "C:\\Users\\yourname\\AppData\\Local\\Programs\\BIM-AZIM Unreal\\BIM-AZIM-Unreal.exe",
+      "args": [],
+      "env": {
+        "UNREAL_HOST": "localhost",
+        "UNREAL_PORT": "30010",
+        "UNREAL_BRIDGE_PORT": "30012"
+      }
+    }
+  }
+}
