@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <AssemblyName>BimAzim.TeklaBridge</AssemblyName>
+    <RootNamespace>BimAzim.TeklaBridge</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+
+    <!--
+      Point this at your Tekla Structures bin folder, e.g.
+      C:\Program Files\Tekla Structures\2024.0\nt\bin
+      Can be overridden without editing this file via the TeklaStructuresBin environment variable.
+    -->
+    <TeklaStructuresBin Condition="'$(TeklaStructuresBin)' == ''">$(TeklaStructuresBin)</TeklaStructuresBin>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!-- Tekla Open API assemblies — referenced from the installed Tekla Structures bin folder. -->
+  <ItemGroup Condition="'$(TeklaStructuresBin)' != ''">
+    <Reference Include="Tekla.Structures">
+      <HintPath>$(TeklaStructuresBin)\Tekla.Structures.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Tekla.Structures.Model">
+      <HintPath>$(TeklaStructuresBin)\Tekla.Structures.Model.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Tekla.Structures.Geometry3d">
+      <HintPath>$(TeklaStructuresBin)\Tekla.Structures.Geometry3d.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Tekla.Structures.Dialog">
+      <HintPath>$(TeklaStructuresBin)\Tekla.Structures.Dialog.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="WarnIfTeklaBinNotSet" BeforeTargets="Build" Condition="'$(TeklaStructuresBin)' == ''">
+    <Warning Text="TeklaStructuresBin is not set — Tekla Open API references were skipped. Set the TeklaStructuresBin environment variable (or MSBuild property) to your Tekla Structures bin folder before building, e.g. C:\Program Files\Tekla Structures\2024.0\nt\bin" />
+  </Target>
+
+</Project>

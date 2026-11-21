@@ -1,0 +1,12 @@
+# Node / server
+server/node_modules/
+server/build/
+*.log
+
+# .NET
+plugins/**/bin/
+plugins/**/obj/
+
+# OS
+Thumbs.db
+.DS_Store
