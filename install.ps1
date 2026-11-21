@@ -252,13 +252,17 @@ function Build-NavisworksPlugin {
         # fails, tell the user exactly what to do instead of silently skipping.
         $pluginDir = "C:\Program Files\Autodesk\Navisworks Manage $year\Plugins\BimAzimNavisPlugin"
         try {
+            # Copy the WHOLE output folder, not just the main DLL - BimAzimNavisPlugin.dll
+            # references dependencies (e.g. Newtonsoft.Json.dll) that live alongside it and must
+            # ship with it, or Navisworks fails to load the plugin with a missing-assembly error.
             New-Item -ItemType Directory -Force -Path $pluginDir -ErrorAction Stop | Out-Null
-            Copy-Item $dllPath (Join-Path $pluginDir "BimAzimNavisPlugin.dll") -Force -ErrorAction Stop
+            $outputDir = Split-Path $dllPath -Parent
+            Copy-Item (Join-Path $outputDir "*") $pluginDir -Force -Exclude "*.pdb" -ErrorAction Stop
             Write-Ok "Navisworks $year plugin installed ($pluginDir)"
             $installed += $year
         } catch {
-            Write-Warn2 "Could not write to $pluginDir (needs admin rights). Built DLL is at: $dllPath"
-            Write-Host "      Run this installer as Administrator, or manually copy that DLL into the folder above." -ForegroundColor DarkGray
+            Write-Warn2 "Could not write to $pluginDir (needs admin rights). Built files are at: $(Split-Path $dllPath -Parent)"
+            Write-Host "      Run this installer as Administrator, or manually copy that whole folder's contents (all .dll files, not just BimAzimNavisPlugin.dll) into the folder above." -ForegroundColor DarkGray
         }
     }
     return $installed
