@@ -1,0 +1,470 @@
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
+using System.Windows.Shapes;
+using BimAzimPlugin.Core;
+using BimAzimPlugin.UI.Themes;
+
+namespace BimAzimPlugin.UI
+{
+    /// <summary>
+    /// Modern WPF window that notifies the user about available plugin updates.
+    /// </summary>
+    public class UpdateNotificationWindow : Window
+    {
+        private readonly UpdateInfo _updateInfo;
+        private Button? _downloadBtn;
+        private TextBlock? _statusText;
+
+        public UpdateNotificationWindow(UpdateInfo updateInfo)
+        {
+            _updateInfo = updateInfo;
+            InitializeWindow();
+            BuildUI();
+        }
+
+        private void InitializeWindow()
+        {
+            Title = "BIM-AZIM — Update Available";
+            Width = 520;
+            // Grow to fit content (header + changelog + all buttons/links) instead of
+            // a fixed height that clipped the bottom; never exceed the usable screen area.
+            SizeToContent = SizeToContent.Height;
+            MinWidth = 420;
+            MinHeight = 380;
+            MaxHeight = Math.Max(MinHeight, SystemParameters.WorkArea.Height - 20);
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            ResizeMode = ResizeMode.NoResize;
+            WindowStyle = WindowStyle.None;
+            AllowsTransparency = true;
+            Background = Brushes.Transparent;
+            ThemeManager.ApplyTheme(this);
+        }
+
+        private void BuildUI()
+        {
+            // Main border with rounded corners and shadow
+            var mainBorder = new Border
+            {
+                CornerRadius = new CornerRadius(16),
+                Background = ThemeManager.BgCanvas,
+                Margin = new Thickness(16),
+                Effect = new DropShadowEffect
+                {
+                    Color = Colors.Black,
+                    BlurRadius = 24,
+                    ShadowDepth = 4,
+                    Opacity = 0.5
+                }
+            };
+
+            // Header (auto) / body (fills remaining, scrolls if needed) / buttons (auto)
+            var mainStack = new Grid { Margin = new Thickness(0) };
+            mainStack.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            mainStack.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            mainStack.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            // ====== Top header bar with gradient ======
+            var headerBorder = new Border
+            {
+                CornerRadius = new CornerRadius(16, 16, 0, 0),
+                Padding = new Thickness(28, 20, 28, 18),
+                Background = new LinearGradientBrush(
+                    DarkTheme.BrandPrimary,
+                    DarkTheme.BrandDark,
+                    45)
+            };
+
+            var headerStack = new StackPanel();
+
+            // Close button
+            var closeBtn = new Button
+            {
+                Content = "✕",
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Background = Brushes.Transparent,
+                Foreground = DarkTheme.FgDim,
+                BorderThickness = new Thickness(0),
+                FontSize = 16,
+                Cursor = System.Windows.Input.Cursors.Hand,
+                Padding = new Thickness(4)
+            };
+            closeBtn.Click += (s, e) => Close();
+            headerStack.Children.Add(closeBtn);
+
+            // Update icon + title
+            headerStack.Children.Add(new TextBlock
+            {
+                Text = "🚀",
+                FontSize = 36,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            headerStack.Children.Add(new TextBlock
+            {
+                Text = "Update Available!",
+                FontSize = 22,
+                FontWeight = FontWeights.Bold,
+                Foreground = DarkTheme.FgWhite,
+                HorizontalAlignment = HorizontalAlignment.Center
+            });
+
+            headerStack.Children.Add(new TextBlock
+            {
+                Text = $"v{Core.Application.Version}  →  {_updateInfo.LatestVersion}",
+                FontSize = 14,
+                Foreground = DarkTheme.FgLight,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 6, 0, 0)
+            });
+
+            headerBorder.Child = headerStack;
+            Grid.SetRow(headerBorder, 0);
+            mainStack.Children.Add(headerBorder);
+
+            // ====== Body content ======
+            var bodyStack = new StackPanel { Margin = new Thickness(28, 20, 28, 12) };
+
+            // What's new label
+            bodyStack.Children.Add(new TextBlock
+            {
+                Text = "What's New",
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = DarkTheme.FgDim,
+                Margin = new Thickness(0, 0, 0, 8)
+            });
+
+            // Changelog scroll area
+            var changelogBorder = new Border
+            {
+                CornerRadius = new CornerRadius(8),
+                Background = DarkTheme.BgDeep,
+                Padding = new Thickness(14),
+                MaxHeight = 130
+            };
+
+            var changelogScroll = new ScrollViewer
+            {
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                MaxHeight = 110
+            };
+
+            var changelogLines = _updateInfo.Changelog.Split(new[] { '\n' }, StringSplitOptions.None);
+            var changelogText = new TextBlock
+            {
+                TextWrapping = TextWrapping.Wrap,
+                Foreground = DarkTheme.FgLight,
+                FontSize = 12,
+                LineHeight = 20
+            };
+
+            foreach (var line in changelogLines)
+            {
+                if (changelogText.Inlines.Count > 0)
+                    changelogText.Inlines.Add(new System.Windows.Documents.LineBreak());
+
+                var trimmed = line.TrimStart();
+                if (trimmed.StartsWith("- ") || trimmed.StartsWith("* "))
+                {
+                    changelogText.Inlines.Add(new System.Windows.Documents.Run("  • " + trimmed.Substring(2))
+                    {
+                        Foreground = DarkTheme.FgLight
+                    });
+                }
+                else
+                {
+                    changelogText.Inlines.Add(new System.Windows.Documents.Run(line));
+                }
+            }
+
+            changelogScroll.Content = changelogText;
+            changelogBorder.Child = changelogScroll;
+            bodyStack.Children.Add(changelogBorder);
+
+            // Status text
+            _statusText = new TextBlock
+            {
+                Text = "",
+                FontSize = 12,
+                Foreground = DarkTheme.FgGreen,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 10, 0, 0),
+                Visibility = Visibility.Collapsed
+            };
+            bodyStack.Children.Add(_statusText);
+
+            mainStack.Children.Add(bodyStack);
+
+            // ====== Bottom buttons ======
+            var buttonPanel = new StackPanel { Margin = new Thickness(28, 4, 28, 24) };
+
+            // Download button (primary) — per-user install, no admin password needed
+            _downloadBtn = CreateButton("⬇  Download & Update (no admin needed)", true);
+            _downloadBtn.Click += OnDownloadClicked;
+            buttonPanel.Children.Add(_downloadBtn);
+
+            // Secondary buttons row
+            var secondaryRow = new Grid { Margin = new Thickness(0, 10, 0, 0) };
+            secondaryRow.ColumnDefinitions.Add(new ColumnDefinition());
+            secondaryRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
+            secondaryRow.ColumnDefinitions.Add(new ColumnDefinition());
+
+            var remindBtn = CreateButton("Remind Me Later", false);
+            remindBtn.Click += (s, e) => Close();
+            Grid.SetColumn(remindBtn, 0);
+            secondaryRow.Children.Add(remindBtn);
+
+            var skipBtn = CreateButton("Skip This Version", false);
+            skipBtn.Click += OnSkipClicked;
+            Grid.SetColumn(skipBtn, 2);
+            secondaryRow.Children.Add(skipBtn);
+
+            buttonPanel.Children.Add(secondaryRow);
+
+            // Opt-out link — turns off automatic update checks entirely.
+            // Manual checks via the ribbon "Check Updates" button still work.
+            var stopUpdatesLink = new TextBlock
+            {
+                Text = "🔕  Don't check for updates automatically",
+                FontSize = 12,
+                Foreground = DarkTheme.FgDim,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 12, 0, 0),
+                Cursor = System.Windows.Input.Cursors.Hand,
+                TextDecorations = TextDecorations.Underline
+            };
+            stopUpdatesLink.MouseLeftButtonDown += OnStopUpdatesClicked;
+            buttonPanel.Children.Add(stopUpdatesLink);
+
+            // View on GitHub link
+            var linkText = new TextBlock
+            {
+                Text = "View release on GitHub →",
+                FontSize = 11,
+                Foreground = DarkTheme.BgAccent,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Margin = new Thickness(0, 12, 0, 0),
+                Cursor = System.Windows.Input.Cursors.Hand,
+                TextDecorations = TextDecorations.Underline
+            };
+            linkText.MouseLeftButtonDown += (s, e) =>
+            {
+                try { Process.Start(_updateInfo.ReleaseUrl); } catch { }
+            };
+            buttonPanel.Children.Add(linkText);
+
+            // Non-admin note — reassures standard users they won't hit a UAC prompt
+            var adminNote = new TextBlock
+            {
+                Text = "No admin password needed — installs for the current user.\nPlease close Revit when the installer asks.",
+                FontSize = 11,
+                Foreground = DarkTheme.FgDim,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                TextAlignment = TextAlignment.Center,
+                Margin = new Thickness(0, 8, 0, 0),
+                TextWrapping = TextWrapping.Wrap
+            };
+            buttonPanel.Children.Add(adminNote);
+
+            mainStack.Children.Add(buttonPanel);
+
+            mainBorder.Child = mainStack;
+            Content = mainBorder;
+
+            // Enable window dragging from the header
+            headerBorder.MouseLeftButtonDown += (s, e) => { try { DragMove(); } catch { } };
+        }
+
+        private Button CreateButton(string text, bool isPrimary)
+        {
+            var btn = new Button
+            {
+                Content = text,
+                Height = 40,
+                FontSize = 14,
+                FontWeight = isPrimary ? FontWeights.SemiBold : FontWeights.Normal,
+                Cursor = System.Windows.Input.Cursors.Hand,
+                BorderThickness = new Thickness(isPrimary ? 0 : 1),
+                Padding = new Thickness(16, 0, 16, 0)
+            };
+
+            if (isPrimary)
+            {
+                btn.Background = new LinearGradientBrush(
+                    DarkTheme.BrandPrimary,
+                    DarkTheme.BrandDark,
+                    90);
+                btn.Foreground = DarkTheme.FgWhite;
+                btn.BorderBrush = Brushes.Transparent;
+            }
+            else
+            {
+                btn.Background = DarkTheme.BgCancel;
+                btn.Foreground = DarkTheme.FgLight;
+                btn.BorderBrush = DarkTheme.BorderDim;
+            }
+
+            // Rounded corners via template
+            var template = new ControlTemplate(typeof(Button));
+            var borderFactory = new FrameworkElementFactory(typeof(Border));
+            borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(8));
+            borderFactory.SetValue(Border.BackgroundProperty, btn.Background);
+            borderFactory.SetValue(Border.BorderBrushProperty, btn.BorderBrush);
+            borderFactory.SetValue(Border.BorderThicknessProperty, btn.BorderThickness);
+
+            var contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenter.SetValue(ContentPresenter.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            borderFactory.AppendChild(contentPresenter);
+
+            template.VisualTree = borderFactory;
+            btn.Template = template;
+
+            return btn;
+        }
+
+        private async void OnDownloadClicked(object sender, RoutedEventArgs e)
+        {
+            if (_downloadBtn == null || _statusText == null) return;
+
+            _downloadBtn.IsEnabled = false;
+            _downloadBtn.Content = "⏳  Downloading...";
+            _statusText.Text = "Downloading update from GitHub...";
+            _statusText.Visibility = Visibility.Visible;
+
+            try
+            {
+                // If there's a direct asset download URL, download it
+                if (!string.IsNullOrEmpty(_updateInfo.AssetFileName) &&
+                    _updateInfo.DownloadUrl != _updateInfo.ReleaseUrl)
+                {
+                    var checker = new UpdateChecker();
+                    _statusText.Text = "Downloading and verifying the update (SHA-256)...";
+                    var filePath = await checker.DownloadUpdateAsync(_updateInfo);
+
+                    _statusText.Text = "✅ Download verified! Opening installer (no admin needed)...";
+                    _downloadBtn.Content = "✅  Downloaded!";
+
+                    // Launch the installer / open the downloaded file
+                    await Task.Delay(800);
+                    LaunchInstallerNonAdmin(filePath);
+                    Close();
+                }
+                else
+                {
+                    // No direct asset — open the GitHub release page
+                    _statusText.Text = "Opening GitHub release page...";
+                    Process.Start(_updateInfo.ReleaseUrl);
+                    await Task.Delay(1000);
+                    Close();
+                }
+            }
+            catch (UpdateVerificationException vex)
+            {
+                // Never run an unverified installer — hand the user the release page instead.
+                _statusText.Foreground = DarkTheme.FgWarning;
+                _statusText.Text = $"❌ {vex.Message}";
+                _downloadBtn.Content = "🌐  Open release page";
+                _downloadBtn.IsEnabled = true;
+                _downloadBtn.Click -= OnDownloadClicked;
+                _downloadBtn.Click += (_, __) =>
+                {
+                    try { Process.Start(new ProcessStartInfo(_updateInfo.ReleaseUrl) { UseShellExecute = true }); } catch { }
+                    Close();
+                };
+            }
+            catch (Exception ex)
+            {
+                _statusText.Foreground = DarkTheme.FgWarning;
+                _statusText.Text = $"❌ Download failed: {ex.Message}";
+                _downloadBtn.Content = "⬇  Retry Download";
+                _downloadBtn.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Launches the downloaded Inno Setup installer in per-user mode so a
+        /// standard Windows account never hits a UAC admin-password prompt.
+        /// /CURRENTUSER forces the non-admin install mode even for installers
+        /// built before the default was changed to per-user.
+        /// </summary>
+        private void LaunchInstallerNonAdmin(string filePath)
+        {
+            try
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = filePath,
+                    Arguments = "/CURRENTUSER",
+                    UseShellExecute = true
+                };
+                Process.Start(psi);
+            }
+            catch (System.ComponentModel.Win32Exception win32ex)
+            {
+                // 1223 = "The operation was canceled by the user" (UAC dismissed).
+                // This should no longer happen in /CURRENTUSER mode, but if an
+                // old machine-wide install forces elevation, explain instead of
+                // leaving the user staring at a password box with no options.
+                Logger.LogError("Update installer launch failed", win32ex);
+                if (_statusText != null)
+                {
+                    _statusText.Foreground = DarkTheme.FgWarning;
+                    _statusText.Text = win32ex.NativeErrorCode == 1223
+                        ? "❌ Install cancelled. Re-run the update and choose \"Install for current user only\" (no admin needed)."
+                        : $"❌ Could not start installer: {win32ex.Message}";
+                }
+                if (_downloadBtn != null)
+                {
+                    _downloadBtn.Content = "⬇  Retry Download";
+                    _downloadBtn.IsEnabled = true;
+                }
+            }
+        }
+
+        private void OnSkipClicked(object sender, RoutedEventArgs e)
+        {
+            UpdateChecker.SkipVersion(_updateInfo.LatestVersion);
+            Close();
+        }
+
+        /// <summary>
+        /// Turns off the automatic startup update check. The user can re-enable it
+        /// from BIM-AZIM Settings, and can still check manually from the ribbon.
+        /// </summary>
+        private void OnStopUpdatesClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                var settings = PluginSettings.Load();
+                settings.AutoCheckUpdates = false;
+                settings.Save();
+                Logger.Log("User turned off automatic update checks from the update notification.");
+
+                MessageBox.Show(
+                    "Automatic update checks are now turned off.\n\n" +
+                    "You can turn them back on anytime in BIM-AZIM Settings, " +
+                    "or check manually with the \"Check Updates\" ribbon button.",
+                    "BIM-AZIM — Updates",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Failed to disable automatic update checks", ex);
+                if (_statusText != null)
+                {
+                    _statusText.Foreground = DarkTheme.FgWarning;
+                    _statusText.Text = $"❌ Could not save setting: {ex.Message}";
+                    _statusText.Visibility = Visibility.Visible;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  BIM-AZIM Revit add-in manifest template.
+
+  Ported/rebranded from BIM-Bot's installer\setup.iss / deploy.ps1 /
+  Install-NonAdmin.ps1 / installer\RevitMCPInstaller\InstallerLogic.cs, which all
+  write a near-identical <RevitAddIns> block with VendorId "HassanElmathary" and
+  BIM-Bot's ClientId "A1B2C3D4-E5F6-7890-ABCD-EF1234567890".
+
+  This file is a TEMPLATE, not something Revit reads directly: {{ASSEMBLY_PATH}}
+  must be replaced with the absolute path to BimAzimPlugin.dll for the target
+  Revit year's build band before this is written into
+  %ProgramData%\Autodesk\Revit\Addins\<year>\BimAzim.addin. See
+  Generate-AddinManifest.ps1 in this folder for an equivalent per-band writer to
+  BIM-Bot's deploy.ps1 (full installer/uninstaller porting is out of scope for
+  this pass — only the manifest-writing step was ported, per the task's
+  rebranding rule 3).
+
+  Rebrand changes from BIM-Bot's manifest, applied so both plugins can be
+  installed side by side without an add-in ID collision:
+    - VendorId:          HassanElmathary -> BimAzim
+    - VendorDescription: "AI-Powered BIM-Bot Plugin by Hassan Ahmed Elmathary"
+                         -> "BIM-AZIM — AI-Powered BIM Automation"
+    - ClientId:          A1B2C3D4-E5F6-7890-ABCD-EF1234567890 (BIM-Bot's)
+                         -> 3A2276CB-8AD1-4C16-9C62-2F4D6AB1291E (freshly
+                            generated for BIM-AZIM; must never be reused)
+-->
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>BIM-AZIM Plugin</Name>
+    <Assembly>{{ASSEMBLY_PATH}}</Assembly>
+    <FullClassName>BimAzimPlugin.Core.Application</FullClassName>
+    <ClientId>3A2276CB-8AD1-4C16-9C62-2F4D6AB1291E</ClientId>
+    <VendorId>BimAzim</VendorId>
+    <VendorDescription>BIM-AZIM — AI-Powered BIM Automation</VendorDescription>
+  </AddIn>
+</RevitAddIns>

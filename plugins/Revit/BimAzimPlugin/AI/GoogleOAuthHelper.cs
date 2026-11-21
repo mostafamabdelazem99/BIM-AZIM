@@ -1,0 +1,362 @@
+// BIM-AZIM TODO: NOT WIRED UP YET.
+// Ported + rebranded from BIM-Bot as-is (Gemini/Ollama/Gemini-CLI chat + Google
+// OAuth integration) so the code exists and compiles, but it depends on
+// external services out of scope for this pass: a user-supplied Gemini API key,
+// a locally installed Ollama/Gemini CLI, and/or Google OAuth client credentials
+// read from the MCP server's .env file at runtime. None of these are
+// compile-time dependencies (no secrets are baked in), and every call path that
+// needs one already checks for it and returns/throws a clear "not configured"
+// message instead of crashing (see IsConfigured / "API key not configured" /
+// "GOOGLE_CLIENT_ID is not configured" below) — that guard is unchanged from
+// BIM-Bot. Wire up real BIM-AZIM credentials/config before enabling this surface.
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace BimAzimPlugin.AI
+{
+    /// <summary>
+    /// Handles Google OAuth 2.0 flow directly from the WPF plugin.
+    /// Opens the browser for sign-in and listens for the callback on localhost.
+    /// Saves tokens so the MCP server can use them too.
+    /// </summary>
+    public class GoogleOAuthHelper
+    {
+        private const int RedirectPort = 3847;
+        private const string RedirectUri = "http://localhost:3847/callback";
+
+        private static readonly string[] Scopes = new[]
+        {
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive.readonly",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile"
+        };
+
+        // Token file — same location as the MCP server uses
+        private static string TokenFilePath => Path.Combine(
+            GetMcpServerConfigDir(), "google-tokens.json");
+
+        /// <summary>
+        /// Read GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET from the MCP server's .env file.
+        /// </summary>
+        public static (string clientId, string clientSecret) LoadCredentials()
+        {
+            var envPath = FindEnvFile();
+            if (string.IsNullOrEmpty(envPath) || !File.Exists(envPath))
+                return ("", "");
+
+            string clientId = "", clientSecret = "";
+            foreach (var line in File.ReadAllLines(envPath))
+            {
+                var trimmed = line.Trim();
+                if (trimmed.StartsWith("GOOGLE_CLIENT_ID="))
+                    clientId = trimmed.Substring("GOOGLE_CLIENT_ID=".Length).Trim();
+                else if (trimmed.StartsWith("GOOGLE_CLIENT_SECRET="))
+                    clientSecret = trimmed.Substring("GOOGLE_CLIENT_SECRET=".Length).Trim();
+            }
+
+            return (clientId, clientSecret);
+        }
+
+        /// <summary>
+        /// Check if valid credentials are configured (not placeholder values).
+        /// </summary>
+        public static bool HasValidCredentials()
+        {
+            var (id, secret) = LoadCredentials();
+            return !string.IsNullOrWhiteSpace(id)
+                && !id.Contains("your_oauth")
+                && !string.IsNullOrWhiteSpace(secret)
+                && !secret.Contains("your_oauth");
+        }
+
+        /// <summary>
+        /// Perform the full OAuth flow: open browser → listen for callback → exchange code → save tokens.
+        /// Returns the user's email on success, or null on failure.
+        /// </summary>
+        public static async Task<string> SignInAsync()
+        {
+            var (clientId, clientSecret) = LoadCredentials();
+
+            if (string.IsNullOrWhiteSpace(clientId) || clientId.Contains("your_oauth"))
+                throw new InvalidOperationException(
+                    "GOOGLE_CLIENT_ID is not configured.\n\n" +
+                    "1. Go to https://console.cloud.google.com/apis/credentials\n" +
+                    "2. Create an OAuth 2.0 Client ID (Desktop app type)\n" +
+                    "3. Copy the Client ID and Client Secret\n" +
+                    "4. Paste them in the MCP server's .env file");
+
+            // CSRF guard: a random nonce that must come back unchanged on the
+            // callback. Without it, anything that can reach the loopback listener
+            // can feed us an attacker's authorization code.
+            var state = GenerateStateNonce();
+
+            // Build the Google OAuth consent URL
+            var authUrl = "https://accounts.google.com/o/oauth2/v2/auth"
+                + $"?client_id={Uri.EscapeDataString(clientId)}"
+                + $"&redirect_uri={Uri.EscapeDataString(RedirectUri)}"
+                + "&response_type=code"
+                + $"&scope={Uri.EscapeDataString(string.Join(" ", Scopes))}"
+                + "&access_type=offline"
+                + $"&state={Uri.EscapeDataString(state)}"
+                + "&prompt=consent";
+
+            // Start local HTTP listener for the callback
+            var listener = new HttpListener();
+            listener.Prefixes.Add($"http://localhost:{RedirectPort}/");
+            listener.Start();
+
+            try
+            {
+                // Open browser for Google sign-in
+                Process.Start(new ProcessStartInfo(authUrl) { UseShellExecute = true });
+
+                // Wait for the callback (timeout: 5 minutes)
+                var contextTask = listener.GetContextAsync();
+                var completed = await Task.WhenAny(contextTask, Task.Delay(TimeSpan.FromMinutes(5)));
+
+                if (completed != contextTask)
+                    throw new TimeoutException("Sign-in timed out after 5 minutes.");
+
+                var context = await contextTask;
+                var request = context.Request;
+                var response = context.Response;
+
+                // Extract the authorization code
+                var code = request.QueryString["code"];
+                var error = request.QueryString["error"];
+                var returnedState = request.QueryString["state"];
+
+                if (!FixedTimeEquals(returnedState, state))
+                {
+                    SendResponse(response, 400, "Sign-in Failed",
+                        "The sign-in response did not match this request. Please try again.");
+                    throw new Exception("OAuth state mismatch - possible CSRF; authorization code discarded.");
+                }
+
+                if (!string.IsNullOrEmpty(error))
+                {
+                    SendResponse(response, 400, "❌ Sign-in Failed", $"Google returned error: {error}");
+                    throw new Exception($"Google sign-in failed: {error}");
+                }
+
+                if (string.IsNullOrEmpty(code))
+                {
+                    SendResponse(response, 400, "❌ Sign-in Failed", "No authorization code received.");
+                    throw new Exception("No authorization code received from Google.");
+                }
+
+                // Exchange code for tokens
+                var tokens = await ExchangeCodeForTokens(code, clientId, clientSecret);
+
+                // Get user email
+                var email = await GetUserEmail(tokens["access_token"]?.ToString() ?? "");
+
+                // Save tokens
+                SaveTokens(tokens);
+
+                // Update integration settings
+                var settings = IntegrationSettings.Load();
+                settings.GoogleSignedIn = true;
+                settings.GoogleEmail = email ?? "";
+                settings.GoogleSheetsEnabled = true;
+                settings.Save();
+
+                SendResponse(response, 200, "✅ Signed In!", 
+                    $"Connected as: {email}\n\nYou can close this window.");
+
+                return email;
+            }
+            finally
+            {
+                listener.Stop();
+                listener.Close();
+            }
+        }
+
+        /// <summary>
+        /// Sign out — remove stored tokens.
+        /// </summary>
+        public static void SignOut()
+        {
+            try
+            {
+                if (File.Exists(TokenFilePath))
+                    File.Delete(TokenFilePath);
+            }
+            catch { }
+
+            var settings = IntegrationSettings.Load();
+            settings.GoogleSignedIn = false;
+            settings.GoogleEmail = "";
+            settings.Save();
+        }
+
+        /// <summary>
+        /// Check if tokens exist and are still valid.
+        /// </summary>
+        public static bool IsSignedIn()
+        {
+            try
+            {
+                if (!File.Exists(TokenFilePath)) return false;
+                var data = JObject.Parse(File.ReadAllText(TokenFilePath));
+                var expiresAt = data["expires_at"]?.Value<long>() ?? 0;
+                return expiresAt > DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            }
+            catch { return false; }
+        }
+
+        // ═══════════════════ Private Helpers ═══════════════════
+
+        private static async Task<JObject> ExchangeCodeForTokens(string code, string clientId, string clientSecret)
+        {
+            using (var client = new HttpClient())
+            {
+                var content = new FormUrlEncodedContent(new Dictionary<string, string>
+                {
+                    { "code", code },
+                    { "client_id", clientId },
+                    { "client_secret", clientSecret },
+                    { "redirect_uri", RedirectUri },
+                    { "grant_type", "authorization_code" }
+                });
+
+                var resp = await client.PostAsync("https://oauth2.googleapis.com/token", content);
+                var body = await resp.Content.ReadAsStringAsync();
+
+                if (!resp.IsSuccessStatusCode)
+                    throw new Exception($"Token exchange failed: {body}");
+
+                var data = JObject.Parse(body);
+                var expiresIn = data["expires_in"]?.Value<int>() ?? 3600;
+
+                return new JObject
+                {
+                    ["access_token"] = data["access_token"],
+                    ["refresh_token"] = data["refresh_token"],
+                    ["expires_at"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (expiresIn * 1000L),
+                    ["token_type"] = data["token_type"],
+                    ["scope"] = data["scope"]
+                };
+            }
+        }
+
+        private static async Task<string> GetUserEmail(string accessToken)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Authorization =
+                        new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+                    var resp = await client.GetStringAsync("https://www.googleapis.com/oauth2/v2/userinfo");
+                    var data = JObject.Parse(resp);
+                    return data["email"]?.ToString() ?? "";
+                }
+            }
+            catch { return ""; }
+        }
+
+        private static void SaveTokens(JObject tokens)
+        {
+            var dir = Path.GetDirectoryName(TokenFilePath)!;
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            File.WriteAllText(TokenFilePath, tokens.ToString(Formatting.Indented));
+        }
+
+        /// <summary>Cryptographically random, URL-safe state value.</summary>
+        private static string GenerateStateNonce()
+        {
+            var bytes = new byte[32];
+            using (var rng = System.Security.Cryptography.RandomNumberGenerator.Create())
+                rng.GetBytes(bytes);
+            return Convert.ToBase64String(bytes).Replace('+', '-').Replace('/', '_').TrimEnd('=');
+        }
+
+        /// <summary>Length-independent, non-short-circuiting comparison for the state nonce.</summary>
+        private static bool FixedTimeEquals(string? a, string? b)
+        {
+            if (a == null || b == null || a.Length != b.Length) return false;
+            var diff = 0;
+            for (var i = 0; i < a.Length; i++) diff |= a[i] ^ b[i];
+            return diff == 0;
+        }
+
+        private static void SendResponse(HttpListenerResponse response, int statusCode, string title, string message)
+        {
+            // title/message can carry provider-supplied text (e.g. the `error` query
+            // parameter), so both are encoded before landing in the page.
+            var safeTitle = System.Net.WebUtility.HtmlEncode(title ?? "");
+            var safeMessage = System.Net.WebUtility.HtmlEncode(message ?? "");
+
+            var html = $@"
+<html>
+<body style=""font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);"">
+  <div style=""text-align:center;background:white;padding:40px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);"">
+    <div style=""font-size:64px;margin-bottom:16px;"">{(statusCode == 200 ? "✅" : "❌")}</div>
+    <h1 style=""color:#333;margin:0 0 8px 0;"">{safeTitle}</h1>
+    <p style=""color:#666;white-space:pre-line;"">{safeMessage}</p>
+    <p style=""color:#999;font-size:14px;"">You can close this window.</p>
+  </div>
+  <script>setTimeout(()=>window.close(),5000)</script>
+</body>
+</html>";
+
+            response.StatusCode = statusCode;
+            response.ContentType = "text/html; charset=utf-8";
+            var buffer = Encoding.UTF8.GetBytes(html);
+            response.ContentLength64 = buffer.Length;
+            response.OutputStream.Write(buffer, 0, buffer.Length);
+            response.Close();
+        }
+
+        private static string GetMcpServerConfigDir()
+        {
+            // MCP server config is at: revit-mcp-server/config/
+            var envPath = FindEnvFile();
+            if (!string.IsNullOrEmpty(envPath))
+                return Path.Combine(Path.GetDirectoryName(envPath)!, "config");
+
+            // Fallback
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Autodesk", "Revit", "Addins", "BimAzim");
+        }
+
+        private static string FindEnvFile()
+        {
+            // Walk up from the plugin DLL: covers both the installed layout
+            // ({app}\plugin\<tfm>\BimAzimPlugin.dll → {app}\server\.env) and a
+            // dev clone (…\revit-mcp-plugin\BimAzimPlugin\bin\Release\<tfm>\
+            // BimAzimPlugin.dll → <repo>\revit-mcp-server\.env), wherever the
+            // repo or install dir lives.
+            try
+            {
+                var dir = Path.GetDirectoryName(
+                    System.Reflection.Assembly.GetExecutingAssembly().Location);
+                for (var i = 0; !string.IsNullOrEmpty(dir) && i < 7; i++)
+                {
+                    var installed = Path.Combine(dir, "server", ".env");
+                    if (File.Exists(installed)) return installed;
+
+                    var devClone = Path.Combine(dir, "revit-mcp-server", ".env");
+                    if (File.Exists(devClone)) return devClone;
+
+                    dir = Path.GetDirectoryName(dir);
+                }
+            }
+            catch { }
+
+            return "";
+        }
+    }
+}
