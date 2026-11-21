@@ -1,0 +1,99 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    BIM-AZIM Navisworks Manage plugin — ADDITIVE-ONLY, Revit plugin untouched.
+    One net48 build PER Navisworks year, 2020-2027 (see Directory.Build.props for why):
+      dotnet build -c Release -p:NavisYear=<year>   ->  bin\N<year>\Release\net48\
+    The API comes from the Speckle.Navisworks.API package for that year as compile-only
+    references (never copied to output — Navisworks provides them at load time). TimeLiner
+    is reached through reflection, so there is no Timeliner reference.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>BimAzimNavisPlugin</RootNamespace>
+    <AssemblyName>BimAzimNavisPlugin</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Version>2.8.0</Version>
+    <Authors>BIM-AZIM</Authors>
+    <Description>BIM-AZIM Plugin for Autodesk Navisworks Manage - AI-powered coordination (parallel to Revit plugin)</Description>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- 2026.0.0 ships the 2025 ComApi (v22) by mistake; 2026.0.1 has the right one (v23). -->
+    <NavisApiPackageVersion>$(NavisYear).0.0</NavisApiPackageVersion>
+    <NavisApiPackageVersion Condition="'$(NavisYear)' == '2026'">2026.0.1</NavisApiPackageVersion>
+    <DefineConstants>$(DefineConstants);NAVIS$(NavisYear)</DefineConstants>
+    <!-- Other years' obj\N<year> folders hold generated .cs files: keep them out of the compile glob. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj\**;bin\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <!-- API-difference symbols used by Core/NavisCompat.cs (verified against each year's API DLLs). -->
+  <PropertyGroup Condition="'$(NavisYear)' &lt;= '2020'">
+    <DefineConstants>$(DefineConstants);NAVIS_NO_IMAGE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NavisYear)' &gt;= '2024'">
+    <DefineConstants>$(DefineConstants);NAVIS_IMAGE_SECTIONING</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NavisYear)' &gt;= '2026'">
+    <DefineConstants>$(DefineConstants);NAVIS_ASSIGNEE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NavisYear)' &gt;= '2027'">
+    <DefineConstants>$(DefineConstants);NAVIS_COMMENT_ASSIGNEE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile-only Navisworks API for $(NavisYear): Api, Clash, ComApi, Interop.ComApi, Controls. -->
+    <PackageReference Include="Speckle.Navisworks.API" Version="$(NavisApiPackageVersion)" PrivateAssets="all" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Dashboard feature: default template only for this pass.
+         BIM-AZIM TODO: BIM-Bot also embeds a custom "3D Viewer" PowerBI visual
+         (bimBot3DViewer1A2B3C4D.pbiviz), Linked in from the sibling Revit plugin project so both
+         exports ship the same visual build. The BIM-AZIM Revit plugin port has not been done yet
+         (no plugins/Revit/BimAzimPlugin/PowerBI/Assets folder to link from), and PowerBI export is
+         explicitly out of scope for this pass — so that EmbeddedResource Link is omitted here.
+         Without it, NavisPbitGenerator.EmbedViewer throws a clear InvalidOperationException at
+         EXPORT time only (not at build or plugin-load time) — see the TODO on NavisPbitGenerator.
+         Re-add the Link once the Revit plugin ports that asset. -->
+    <EmbeddedResource Include="Dashboard\Templates\*.json" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- BIM-AZIM TODO (NOT guessed around — flagged instead, per the port instructions): every file
+         below calls into a BimAzimNavisPlugin.Dashboard.Config namespace (DashboardConfig,
+         DashboardJson, PageSpec, VisualSpec, ExportOptions, ViewerSpec, ExportState) that does not
+         exist anywhere in the upstream BIM-Bot repo as downloaded — not just in this plugin folder,
+         grep'd across the whole repo. This is a file missing from the source export, not a
+         Navisworks-API-version difference, and fabricating that config/JSON-contract type from
+         usage alone risks silently diverging from BIM-Bot's real behavior (exact field names,
+         defaults, and JSON settings matter: this type round-trips through DefaultDashboard.json and
+         the on-disk dashboard registry). So rather than guess, the whole Dashboard feature (all of
+         Dashboard\**, plus the two Core partial files that dispatch to it) is excluded from this
+         build. The source is still ported and present on disk for when the real Config type is
+         sourced from BIM-Bot; only compilation is disabled. The 7 navis_dashboard_* commands return
+         "Unknown Navisworks command" in the meantime — a clean, non-crashing degradation, consistent
+         with "stub out-of-scope network/export features to fail gracefully." -->
+    <Compile Remove="Dashboard\**\*.cs" />
+    <Compile Remove="Core\NavisCommandExecutor.Dashboard.cs" />
+    <Compile Remove="Core\NavisCommandExecutor.DashboardBridge.cs" />
+  </ItemGroup>
+
+</Project>
