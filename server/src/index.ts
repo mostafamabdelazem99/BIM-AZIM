@@ -10,6 +10,7 @@ import { revitTools } from "./tools/revit.js";
 import { navisworksTools } from "./tools/navisworks.js";
 import { revitAiTools } from "./tools/revit-ai.js";
 import { revitIntegrationTools } from "./tools/revit-integrations.js";
+import { revitDocumentationTools } from "./tools/revit-documentation.js";
 import { navisAiTools } from "./tools/navis-ai.js";
 import { navisDashboardTools } from "./tools/navis-dashboard.js";
 
@@ -33,6 +34,7 @@ function registerAll(client: ToolBridge, tools: readonly ToolDefinition[]) {
 registerAll(revitClient, revitTools);
 registerAll(revitClient, revitAiTools);
 registerAll(revitClient, revitIntegrationTools);
+registerAll(revitClient, revitDocumentationTools);
 registerAll(navisClient, navisworksTools);
 registerAll(navisClient, navisAiTools);
 registerAll(navisClient, navisDashboardTools);

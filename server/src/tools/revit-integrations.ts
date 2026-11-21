@@ -13,6 +13,49 @@ import { defineTool } from "./types.js";
  */
 export const revitIntegrationTools = [
   defineTool({
+    name: "revit_export_to_excel",
+    description: "Export Revit elements of a specific category to an Excel (.xlsx) file on your local machine. Creates a formatted spreadsheet with headers, styling, and auto-width columns.",
+    inputShape: {
+      category: z.string().describe("Revit category to export, e.g. 'Walls', 'Doors', 'Windows', 'Rooms', 'Floors'"),
+      filePath: z.string().optional().describe("Full file path for the Excel file. Default: Desktop/revit-export-<timestamp>.xlsx"),
+      sheetName: z.string().optional().describe("Name of the worksheet (default: 'Revit Data')"),
+      includeParameters: z.boolean().default(true).describe("Include all element parameters"),
+    },
+    bridgeToolName: "export_to_excel",
+  }),
+
+  defineTool({
+    name: "revit_export_revit_data",
+    description: "Lightweight metadata-only export of Revit elements using batched streaming (100 per cycle). Returns minified data (id, guid, name, category, level, mark, area, typeName, editedBy) without loading full parameters. Supports delta-sync via modifiedAfter. Ideal for large models.",
+    inputShape: {
+      category: z.string().describe("Revit category to export, e.g. 'Walls', 'Doors', 'Windows', 'Rooms', 'Columns'"),
+      batchSize: z.number().default(100).describe("Elements per batch. Max recommended: 100 to prevent Revit UI freezing."),
+      modifiedAfter: z.string().optional().describe("ISO 8601 timestamp — only export elements modified after this date (delta-sync)"),
+    },
+    bridgeToolName: "export_elements",
+  }),
+
+  defineTool({
+    name: "revit_compare_snapshots",
+    description: "Compare two SQLite snapshots of Revit data to find added, removed, and changed elements. Useful for tracking design changes between sync sessions.",
+    inputShape: {
+      tableName: z.string().describe("Table name to compare (e.g. 'doors', 'walls', 'rooms')"),
+      olderSnapshotId: z.number().describe("The older (baseline) snapshot ID"),
+      newerSnapshotId: z.number().describe("The newer (current) snapshot ID"),
+    },
+    bridgeToolName: "compare_snapshots",
+  }),
+
+  defineTool({
+    name: "revit_delta_sync",
+    description: "One-click delta-sync: exports current Revit data, saves to a SQLite snapshot, compares with the previous snapshot, and reports added/removed/changed elements.",
+    inputShape: {
+      category: z.string().describe("Revit category to sync, e.g. 'Walls', 'Doors', 'Rooms'"),
+    },
+    bridgeToolName: "delta_sync",
+  }),
+
+  defineTool({
     name: "revit_export_to_sqlite",
     description: "Save a snapshot of Revit elements to a local SQLite database. Each export creates a timestamped snapshot for delta-sync comparison.",
     inputShape: {
