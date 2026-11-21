@@ -2,14 +2,20 @@
 <#
   BIM-AZIM installer.
 
-  Per-user install (no admin rights needed). Downloads the BIM-AZIM source, builds the MCP
-  server, builds the Tekla Structures bridge IF Tekla Structures is detected on this machine
-  (its Open API DLLs are proprietary and only exist inside a real Tekla install - this installer
-  cannot and does not bundle them), and registers the MCP server with any supported AI clients
-  found on this machine.
+  Per-user install (no admin rights needed, except the one noted exception below). Downloads the
+  BIM-AZIM source, builds the MCP server, and then for each engine it detects on this machine:
 
-  Revit and Navisworks Manage support is not built yet (see plugins/Revit, plugins/Navisworks in
-  the repo) - this installer does not claim to configure them.
+  - Revit (2020-2027, detected via C:\Program Files\Autodesk\Revit <year>): builds the plugin for
+    every detected year and writes its .addin manifest to the PER-USER addin folder
+    (%APPDATA%\Autodesk\Revit\Addins\<year>) - no admin rights needed.
+  - Navisworks Manage (2020-2027): builds the plugin for every detected year and copies the DLL
+    into that Navisworks install's own Plugins folder under Program Files - this DOES need admin
+    rights (Navisworks has no per-user plugin folder); if that copy fails, the built DLL's path is
+    printed so you can copy it yourself, or re-run this installer as Administrator.
+  - Tekla Structures: builds the bridge IF Tekla Structures is detected (its Open API DLLs are
+    proprietary and only exist inside a real Tekla install - this installer cannot bundle them).
+
+  Finally it registers the MCP server with any supported AI clients found on this machine.
 
   Usage:
     irm https://raw.githubusercontent.com/mostafamabdelazem99/BIM-AZIM/main/install.ps1 | iex
@@ -55,6 +61,24 @@ function Get-DotnetPath {
     return $null
 }
 
+function Get-RevitYears {
+    # 2025+ installers no longer write a registry key for Revit, so this probes the filesystem —
+    # same reasoning BIM-Bot's own installer uses (see plugins/Revit/BimAzimPlugin's porting notes).
+    $years = @()
+    foreach ($year in 2020..2027) {
+        if (Test-Path "C:\Program Files\Autodesk\Revit $year") { $years += $year }
+    }
+    return $years
+}
+
+function Get-NavisworksYears {
+    $years = @()
+    foreach ($year in 2020..2027) {
+        if (Test-Path "C:\Program Files\Autodesk\Navisworks Manage $year") { $years += $year }
+    }
+    return $years
+}
+
 function Get-TeklaStructuresBin {
     # Tekla Structures installs as C:\Program Files\Tekla Structures\<version>\nt\bin on 64-bit builds.
     $root = "C:\Program Files\Tekla Structures"
@@ -80,9 +104,18 @@ function Download-Source {
     $extractedRepoDir = Get-ChildItem $extractDir -Directory | Select-Object -First 1
     if (-not $extractedRepoDir) { throw "Downloaded archive did not contain the expected folder." }
 
-    if (Test-Path $AppDir) { Remove-Item $AppDir -Recurse -Force }
-    Move-Item $extractedRepoDir.FullName $AppDir
+    # Move CONTENTS into $AppDir rather than moving the extracted folder itself: if $AppDir
+    # already exists (a previous install, or a partial cleanup), Move-Item onto an existing
+    # directory nests the source inside it instead of replacing it - this avoids that entirely,
+    # regardless of why $AppDir might still be there.
+    New-Item -ItemType Directory -Force -Path $AppDir | Out-Null
+    Get-ChildItem $AppDir -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    Get-ChildItem $extractedRepoDir.FullName -Force | Move-Item -Destination $AppDir -Force
+
     Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue
+    if (-not (Test-Path (Join-Path $AppDir "server\package.json"))) {
+        throw "Source did not land correctly at $AppDir (missing server/package.json) - installer bug, please report this."
+    }
     Write-Ok "Source placed at $AppDir"
 }
 
@@ -116,14 +149,119 @@ function Build-TeklaBridge {
 
     Write-Step "Building the Tekla bridge against your local Tekla Open API"
     $proj = Join-Path $AppDir "plugins\Tekla\BimAzim.TeklaBridge\BimAzim.TeklaBridge.csproj"
-    & $dotnetExe build $proj -c Release -p:TeklaStructuresBin="$teklaBin" | Out-Null
+    $buildOutput = & $dotnetExe build $proj -c Release -p:TeklaStructuresBin="$teklaBin" 2>&1
     $builtExe = Get-ChildItem (Join-Path $AppDir "plugins\Tekla\BimAzim.TeklaBridge\bin\Release") -Recurse -Filter "BimAzim.TeklaBridge.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $builtExe) {
+    if ($LASTEXITCODE -ne 0 -or -not $builtExe) {
         Write-Warn2 "Tekla bridge build did not produce an .exe - see plugins/Tekla/README.md 'Known gaps'; the Open API surface may differ for your Tekla version and need a code fix."
+        Write-Host "      Last lines of dotnet build output:" -ForegroundColor DarkGray
+        $buildOutput | Select-Object -Last 15 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
         return $false
     }
     Write-Ok "Tekla bridge built: $($builtExe.FullName)"
     return $true
+}
+
+$RevitTfmByYear = @{
+    2020 = 'net47'; 2021 = 'net48'; 2022 = 'net48'; 2023 = 'net48'; 2024 = 'net48'
+    2025 = 'net8.0-windows'; 2026 = 'net8.0-windows'; 2027 = 'net10.0-windows'
+}
+
+function Build-RevitPlugin {
+    Write-Step "Checking for Autodesk Revit"
+    $years = Get-RevitYears
+    if ($years.Count -eq 0) {
+        Write-Warn2 "No Revit install detected (checked C:\Program Files\Autodesk\Revit <year> for 2020-2027)"
+        return @()
+    }
+    Write-Ok "Found Revit: $($years -join ', ')"
+
+    $dotnetExe = Get-DotnetPath
+    if (-not $dotnetExe) {
+        Write-Warn2 ".NET SDK not found - skipping the Revit plugin build. Install the .NET 8 SDK (https://dotnet.microsoft.com/download) and re-run this installer."
+        return @()
+    }
+
+    $proj = Join-Path $AppDir "plugins\Revit\BimAzimPlugin\BimAzimPlugin.csproj"
+    $templatePath = Join-Path $AppDir "plugins\Revit\BimAzimPlugin\Deploy\BimAzim.addin.template"
+    $installed = @()
+
+    foreach ($year in $years) {
+        Write-Step "Building the Revit plugin for $year ($($RevitTfmByYear[$year]))"
+        $buildOutput = & $dotnetExe build $proj -c Release -p:RevitVersion=$year 2>&1
+        $buildFailed = ($LASTEXITCODE -ne 0)
+
+        $dllPath = Join-Path $AppDir "plugins\Revit\BimAzimPlugin\bin\R$year\Release\$($RevitTfmByYear[$year])\BimAzimPlugin.dll"
+        if ($buildFailed -or -not (Test-Path $dllPath)) {
+            Write-Warn2 "Revit $year build did not produce $dllPath - see plugins/Revit/README.md"
+            Write-Host "      Last lines of dotnet build output:" -ForegroundColor DarkGray
+            $buildOutput | Select-Object -Last 15 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
+            continue
+        }
+
+        # Per-user addin folder (not %ProgramData%) so this installer never needs admin rights.
+        $addinDir = Join-Path $env:APPDATA "Autodesk\Revit\Addins\$year"
+        New-Item -ItemType Directory -Force -Path $addinDir | Out-Null
+        # -Encoding UTF8 is required here: Windows PowerShell 5.1's default Get-Content encoding
+        # mis-decodes non-ASCII bytes in a no-BOM UTF-8 file, corrupting any em-dash etc. in the
+        # template into mojibake in the written .addin file.
+        $content = (Get-Content -Raw -Encoding UTF8 $templatePath) -replace '(?s)<!--.*?-->\s*', ''
+        $content = $content -replace [regex]::Escape('{{ASSEMBLY_PATH}}'), $dllPath
+        $content | Out-File -Encoding utf8 -Force (Join-Path $addinDir "BimAzim.addin")
+
+        Write-Ok "Revit $year plugin installed ($addinDir\BimAzim.addin -> $dllPath)"
+        $installed += $year
+    }
+    return $installed
+}
+
+$NavisTfm = 'net48'
+
+function Build-NavisworksPlugin {
+    Write-Step "Checking for Navisworks Manage"
+    $years = Get-NavisworksYears
+    if ($years.Count -eq 0) {
+        Write-Warn2 "No Navisworks Manage install detected (checked C:\Program Files\Autodesk\Navisworks Manage <year> for 2020-2027)"
+        return @()
+    }
+    Write-Ok "Found Navisworks Manage: $($years -join ', ')"
+
+    $dotnetExe = Get-DotnetPath
+    if (-not $dotnetExe) {
+        Write-Warn2 ".NET SDK not found - skipping the Navisworks plugin build. Install the .NET 8 SDK (https://dotnet.microsoft.com/download) and re-run this installer."
+        return @()
+    }
+
+    $proj = Join-Path $AppDir "plugins\Navisworks\BimAzimNavisPlugin\BimAzimNavisPlugin.csproj"
+    $installed = @()
+
+    foreach ($year in $years) {
+        Write-Step "Building the Navisworks plugin for $year"
+        $buildOutput = & $dotnetExe build $proj -c Release -p:NavisYear=$year 2>&1
+        $buildFailed = ($LASTEXITCODE -ne 0)
+
+        $dllPath = Join-Path $AppDir "plugins\Navisworks\BimAzimNavisPlugin\bin\N$year\Release\$NavisTfm\BimAzimNavisPlugin.dll"
+        if ($buildFailed -or -not (Test-Path $dllPath)) {
+            Write-Warn2 "Navisworks $year build did not produce $dllPath - see plugins/Navisworks/README.md"
+            Write-Host "      Last lines of dotnet build output:" -ForegroundColor DarkGray
+            $buildOutput | Select-Object -Last 15 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
+            continue
+        }
+
+        # Navisworks loads AddInPlugins from its own install's Plugins folder, which normally
+        # needs admin rights to write to (unlike Revit's per-user addin folder). Try it; if it
+        # fails, tell the user exactly what to do instead of silently skipping.
+        $pluginDir = "C:\Program Files\Autodesk\Navisworks Manage $year\Plugins\BimAzimNavisPlugin"
+        try {
+            New-Item -ItemType Directory -Force -Path $pluginDir -ErrorAction Stop | Out-Null
+            Copy-Item $dllPath (Join-Path $pluginDir "BimAzimNavisPlugin.dll") -Force -ErrorAction Stop
+            Write-Ok "Navisworks $year plugin installed ($pluginDir)"
+            $installed += $year
+        } catch {
+            Write-Warn2 "Could not write to $pluginDir (needs admin rights). Built DLL is at: $dllPath"
+            Write-Host "      Run this installer as Administrator, or manually copy that DLL into the folder above." -ForegroundColor DarkGray
+        }
+    }
+    return $installed
 }
 
 function Merge-McpConfig($configPath) {
@@ -196,6 +334,8 @@ Write-Host ""
 Ensure-Node
 Download-Source
 Build-Server
+$revitYears = Build-RevitPlugin
+$navisYears = Build-NavisworksPlugin
 $teklaReady = Build-TeklaBridge
 $clientsConfigured = Configure-AiClients
 
@@ -204,9 +344,16 @@ Write-Host "==================================================================" 
 Write-Host " BIM-AZIM is installed at: $InstallRoot" -ForegroundColor Cyan
 Write-Host "==================================================================" -ForegroundColor Cyan
 Write-Host " MCP server:            ready ($ServerEntry)"
+Write-Host " Revit plugin:           $(if ($revitYears.Count -gt 0) { "installed for $($revitYears -join ', ')" } else { 'not installed (no Revit detected or build failed - see messages above)' })"
+Write-Host " Navisworks plugin:      $(if ($navisYears.Count -gt 0) { "installed for $($navisYears -join ', ')" } else { 'not installed (no Navisworks detected or build failed - see messages above)' })"
 Write-Host " Tekla bridge:           $(if ($teklaReady) { 'built - see plugins/Tekla/README.md to start it' } else { 'not built (see message above)' })"
-Write-Host " Revit / Navisworks:     not available yet (no plugin code built for these engines)"
 Write-Host " AI clients configured: $clientsConfigured"
 Write-Host ""
+if ($revitYears.Count -gt 0) {
+    Write-Host " Restart Revit so it picks up the new add-in (look for the 'BIM-AZIM' ribbon tab)." -ForegroundColor DarkGray
+}
+if ($navisYears.Count -gt 0) {
+    Write-Host " Restart Navisworks Manage so it picks up the new add-in (Add-ins tab -> BIM-AZIM)." -ForegroundColor DarkGray
+}
 Write-Host " Restart your AI client(s), then ask them to call 'bimazim_engine_status' to confirm the connection."
 Write-Host ""

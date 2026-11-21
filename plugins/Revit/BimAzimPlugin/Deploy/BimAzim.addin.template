@@ -32,6 +32,6 @@
     <FullClassName>BimAzimPlugin.Core.Application</FullClassName>
     <ClientId>3A2276CB-8AD1-4C16-9C62-2F4D6AB1291E</ClientId>
     <VendorId>BimAzim</VendorId>
-    <VendorDescription>BIM-AZIM — AI-Powered BIM Automation</VendorDescription>
+    <VendorDescription>BIM-AZIM - AI-Powered BIM Automation</VendorDescription>
   </AddIn>
 </RevitAddIns>
