@@ -1,5 +1,5 @@
 import { z, ZodRawShape } from "zod";
-import { EngineClient } from "../bridge/engine-client.js";
+import { ToolBridge } from "../bridge/engine-client.js";
 
 export interface ToolDefinition<Shape extends ZodRawShape = ZodRawShape> {
   /** MCP-facing name, e.g. "tekla_get_selected_objects". */
@@ -33,7 +33,7 @@ export function toToolResponse(result: { ok: boolean; data?: unknown; error?: st
 
 export type ToolHandlerArgs<Shape extends ZodRawShape> = { [K in keyof Shape]: z.infer<Shape[K]> };
 
-export function makeBridgeHandler<Shape extends ZodRawShape>(client: EngineClient, def: ToolDefinition<Shape>) {
+export function makeBridgeHandler<Shape extends ZodRawShape>(client: ToolBridge, def: ToolDefinition<Shape>) {
   return async (args: ToolHandlerArgs<Shape>) => {
     const result = await client.callTool(def.bridgeToolName, args as Record<string, unknown>);
     return toToolResponse(result);

@@ -18,14 +18,16 @@ function portFromEnv(name: string, fallback: number): number {
 export const ENGINES: Record<EngineId, EngineConfig> = {
   revit: {
     id: "revit",
+    // Deliberately NOT 8080 (BIM-Bot's default) — so BIM-AZIM's plugin can run side by side with
+    // a BIM-Bot install on the same machine without a port collision.
     label: "Autodesk Revit",
-    baseUrl: `http://127.0.0.1:${portFromEnv("BIMAZIM_REVIT_PORT", 8080)}`,
+    baseUrl: `tcp://127.0.0.1:${portFromEnv("BIMAZIM_REVIT_PORT", 8082)}`,
     inProcess: true,
   },
   navisworks: {
     id: "navisworks",
     label: "Navisworks Manage",
-    baseUrl: `http://127.0.0.1:${portFromEnv("BIMAZIM_NAVIS_PORT", 8091)}`,
+    baseUrl: `tcp://127.0.0.1:${portFromEnv("BIMAZIM_NAVIS_PORT", 8093)}`,
     inProcess: true,
   },
   tekla: {

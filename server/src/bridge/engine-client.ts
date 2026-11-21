@@ -6,6 +6,11 @@ export interface BridgeResult<T = unknown> {
   error?: string;
 }
 
+/** Shape every engine transport implements, whatever's on the wire (HTTP, TCP JSON-RPC, ...). */
+export interface ToolBridge {
+  callTool<T = unknown>(toolName: string, args: Record<string, unknown>): Promise<BridgeResult<T>>;
+}
+
 /**
  * Talks to one engine's local bridge (Revit/Navisworks in-process add-in, or the
  * out-of-process Tekla bridge service). Every bridge exposes the same contract:
