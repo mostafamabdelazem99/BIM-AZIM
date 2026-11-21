@@ -236,8 +236,35 @@
   <section id="install" class="container">
     <div class="section-head">
       <div class="eyebrow">Installation</div>
-      <h2>Get the server running</h2>
-      <p>No one-click installer yet — this is a fresh scaffold. Manual setup for now, see each component's README for detail.</p>
+      <h2>Get BIM-AZIM running</h2>
+      <p>One installer sets up the MCP server, builds the Tekla bridge if Tekla Structures is on your PC, and registers itself with your AI client.</p>
+    </div>
+
+    <div class="install-card">
+      <span class="pill">AUTOMATED SETUP</span>
+      <h3>Download Installer</h3>
+      <p class="install-sub">One executable — downloads the source, builds the server, and configures everything it can automatically.</p>
+      <a class="btn-primary install-download" href="https://github.com/mostafamabdelazem99/BIM-AZIM/releases/latest/download/BIM-AZIM-Setup.exe">
+        <span class="dl-icon">&#8681;</span> Download BIM-AZIM Setup
+      </a>
+      <p class="install-meta">Windows Installer (EXE) &middot; Per-user, no admin required &middot; <a href="https://github.com/mostafamabdelazem99/BIM-AZIM/releases/latest">All releases</a></p>
+
+      <p class="install-sub" style="margin-top:28px;"><strong>Double-click the .exe to start.</strong> It installs to <code>%LOCALAPPDATA%\BimAzim</code> and only touches your AI clients' MCP config, nothing else.</p>
+
+      <div class="tool-list" style="margin-top:14px;">
+        <div class="tool-row"><span class="name">&#10003; Builds the MCP server</span><span class="desc">Node.js installed automatically if missing</span></div>
+        <div class="tool-row"><span class="name">&#10003; Builds the Tekla bridge</span><span class="desc">only if Tekla Structures is detected locally</span></div>
+        <div class="tool-row"><span class="name">&#10003; Configures Claude Desktop</span><span class="desc">merges in, never overwrites your existing config</span></div>
+        <div class="tool-row"><span class="name">&#10003; Configures Cursor &amp; VS Code</span><span class="desc">if found on this machine</span></div>
+      </div>
+
+      <p class="install-meta" style="margin-top:18px;">Revit and Navisworks Manage plugins aren't built yet — the installer skips them honestly rather than pretending to. Prefer the one-line version?</p>
+      <div class="code-block">irm https://raw.githubusercontent.com/mostafamabdelazem99/BIM-AZIM/main/install.ps1 | iex</div>
+    </div>
+
+    <div class="section-head" style="margin-top:56px;">
+      <div class="eyebrow">Manual setup</div>
+      <h2>Prefer to build it yourself?</h2>
     </div>
 
     <div class="code-block"><span class="comment"># 1. Build the MCP server</span>
