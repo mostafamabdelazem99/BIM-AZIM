@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BIM-AZIM — AI-Powered Revit, Navisworks &amp; Tekla Structures Automation</title>
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that brings AI automation to Autodesk Revit, Navisworks Manage, and — new — Tekla Structures (Trimble)." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">AZ</span>
+        BIM-AZIM
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#tools">Tools</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#tekla">Tekla Integration</a>
+        <a href="#install">Install</a>
+      </div>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <button id="theme-toggle" aria-label="Toggle theme" style="background:none;border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;color:var(--text);">◐</button>
+        <a class="nav-cta" href="#install">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="top" class="hero container">
+    <div class="badge"><span class="dot"></span> Open Source &amp; Free</div>
+    <h1>AI-Powered <span class="grad">Revit, Navisworks<br/>&amp; Tekla Structures</span></h1>
+    <p class="sub">
+      One MCP server, three parallel BIM engines. BIM-AZIM drives Autodesk Revit and Navisworks
+      Manage like the tools you already know — and adds genuine, first-class
+      <strong>Tekla Structures (Trimble)</strong> automation alongside them.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#install">Get Started</a>
+      <a class="btn-secondary" href="#tekla">See the Tekla Integration</a>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat"><div class="num">20</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num">3</div><div class="label">BIM Engines</div></div>
+      <div class="stat"><div class="num">1</div><div class="label">New: Tekla Bridge</div></div>
+      <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
+    </div>
+
+    <div class="engines">
+      <div class="engine-card">
+        <div class="engine-icon">R</div>
+        <h3>Autodesk Revit</h3>
+        <p class="ver">In-process add-in · 2020–2027</p>
+        <span class="pill">LIVE LINK</span>
+      </div>
+      <div class="engine-card">
+        <div class="engine-icon">N</div>
+        <h3>Navisworks Manage</h3>
+        <p class="ver">In-process add-in · 2020+ coordination</p>
+        <span class="pill">LIVE LINK</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">T</div>
+        <h3>Tekla Structures</h3>
+        <p class="ver">External Open API bridge · Trimble</p>
+        <span class="pill new">NEW</span>
+      </div>
+    </div>
+  </header>
+
+  <section id="features" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Features</div>
+      <h2>Everything you need to automate three BIM engines</h2>
+      <p>A toolkit that bridges the gap between AI and BIM — now including structural steel/precast workflows in Tekla.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card feature-new">
+        <div class="icon">🧩</div>
+        <h3>Tekla Structures Bridge <span class="pill new">NEW</span></h3>
+        <p>Connects to a running Tekla Structures session via the Tekla Open API — read/select/create/modify parts, run numbering, and export IFC, driven entirely from chat.</p>
+        <div class="tag-row"><span class="tag">Beams &amp; Columns</span><span class="tag">Contour Plates</span><span class="tag">Numbering</span><span class="tag">IFC Export</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🧠</div>
+        <h3>Built-in AI Chat</h3>
+        <p>Drive Revit, Navisworks, and Tekla models with natural language from Claude, ChatGPT, Cursor, or any MCP client.</p>
+        <div class="tag-row"><span class="tag">MCP Protocol</span><span class="tag">Context-Aware</span></div>
+      </div>
+      <div class="card feature-new">
+        <div class="icon">🧮</div>
+        <h3>Cross-Engine Interference Check <span class="pill new">NEW</span></h3>
+        <p>A lightweight bounding-box clash pass inside the Tekla bridge itself — a quick sanity check on a structural model without needing a separate Navisworks seat.</p>
+        <div class="tag-row"><span class="tag">No Navisworks Required</span><span class="tag">Fast</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🔗</div>
+        <h3>Three Parallel Engines</h3>
+        <p>Revit and Navisworks Manage run in-process, the same proven way established BIM-AI tools work. Tekla connects out-of-process — see why in the architecture docs.</p>
+        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span></div>
+      </div>
+      <div class="card">
+        <div class="icon">🛠️</div>
+        <h3>Extensible Tool Registry</h3>
+        <p>Every tool is a small, typed definition on both sides of the bridge — add a new one by following the existing pattern, no framework rewrite needed.</p>
+        <div class="tag-row"><span class="tag">TypeScript</span><span class="tag">.NET</span></div>
+      </div>
+      <div class="card feature-new">
+        <div class="icon">🌐</div>
+        <h3>Trimble Connect <span class="pill new">ROADMAP</span></h3>
+        <p>Since Tekla models usually live in Trimble Connect, pushing sync updates and pulling markups is next on the roadmap — a feature no Revit-only tool can offer.</p>
+        <div class="tag-row"><span class="tag">Planned</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Tools</div>
+      <h2>MCP tools by engine</h2>
+      <p>This is the current scaffold's real tool catalog — small today, built to grow the same way larger BIM-AI toolkits did.</p>
+    </div>
+
+    <div class="tools-tabs">
+      <button class="tab-btn active" data-panel="panel-tekla">Tekla Structures (14)</button>
+      <button class="tab-btn" data-panel="panel-revit">Revit (3)</button>
+      <button class="tab-btn" data-panel="panel-navis">Navisworks (3)</button>
+    </div>
+
+    <div id="panel-tekla" class="tool-panel active">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">tekla_get_model_info</span><span class="desc">connection + model name/path</span></div>
+        <div class="tool-row"><span class="name">tekla_get_selected_objects</span><span class="desc">summarize current selection</span></div>
+        <div class="tool-row"><span class="name">tekla_select_by_filter</span><span class="desc">type / name / phase filter</span></div>
+        <div class="tool-row"><span class="name">tekla_get_part_properties</span><span class="desc">full properties by GUID</span></div>
+        <div class="tool-row"><span class="name">tekla_get_assemblies</span><span class="desc">list assemblies by phase</span></div>
+        <div class="tool-row"><span class="name">tekla_create_beam</span><span class="desc">beam/column between 2 points</span></div>
+        <div class="tool-row"><span class="name">tekla_create_contour_plate</span><span class="desc">plate from point list</span></div>
+        <div class="tool-row"><span class="name">tekla_move_part</span><span class="desc">translate by delta vector</span></div>
+        <div class="tool-row"><span class="name">tekla_modify_part</span><span class="desc">profile/material/class/phase</span></div>
+        <div class="tool-row"><span class="name">tekla_delete_objects</span><span class="desc">delete by GUID</span></div>
+        <div class="tool-row"><span class="name">tekla_run_numbering</span><span class="desc">all or modified-only</span></div>
+        <div class="tool-row"><span class="name">tekla_check_interference</span><span class="desc">bounding-box clash pass</span></div>
+        <div class="tool-row"><span class="name">tekla_export_ifc</span><span class="desc">via recorded macro</span></div>
+        <div class="tool-row"><span class="name">tekla_push_to_trimble_connect</span><span class="desc">stub — roadmap</span></div>
+      </div>
+    </div>
+
+    <div id="panel-revit" class="tool-panel">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">revit_get_model_info</span><span class="desc">document name/path/view</span></div>
+        <div class="tool-row"><span class="name">revit_get_selected_elements</span><span class="desc">current selection + params</span></div>
+        <div class="tool-row"><span class="name">revit_get_elements</span><span class="desc">query by category/view</span></div>
+      </div>
+    </div>
+
+    <div id="panel-navis" class="tool-panel">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">navis_get_model_info</span><span class="desc">document + appended files</span></div>
+        <div class="tool-row"><span class="name">navis_get_selected</span><span class="desc">current selection + properties</span></div>
+        <div class="tool-row"><span class="name">navis_run_clash_test</span><span class="desc">run a named clash test</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Architecture</div>
+      <h2>How it works</h2>
+      <p>A three-layer design connecting AI to three different BIM APIs — each wired the way its own API actually works.</p>
+    </div>
+
+    <div class="arch-flow">
+      <div class="arch-node">
+        <strong>AI Client Layer</strong>
+        <span>Claude Desktop · Claude Code · ChatGPT · Cursor · VS Code · any MCP client</span>
+      </div>
+      <div class="arch-arrow">↓ MCP protocol (stdio / JSON-RPC)</div>
+      <div class="arch-node">
+        <strong>BIM-AZIM MCP Server</strong>
+        <span>Node.js + TypeScript · tool registry · routes to the right engine bridge</span>
+      </div>
+      <div class="arch-arrow">↓ HTTP/JSON, one port per engine</div>
+      <div class="arch-branch">
+        <div class="arch-node">
+          <strong>Revit Add-in</strong>
+          <span>In-process · :8080</span>
+        </div>
+        <div class="arch-node">
+          <strong>Navisworks Add-in</strong>
+          <span>In-process · :8091</span>
+        </div>
+        <div class="arch-node tekla">
+          <strong>Tekla Bridge Service</strong>
+          <span>Out-of-process · :8092</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="verify-note">
+      <strong>Built honestly:</strong> the Tekla bridge code was written against my knowledge of the
+      Tekla Open API, but wasn't compiled or run against a live Tekla Structures install in this
+      environment. Every spot worth double-checking is flagged <code>// VERIFY:</code> in the
+      source, with the full checklist in <code>docs/TEKLA_INTEGRATION.md</code>.
+    </div>
+  </section>
+
+  <section id="tekla" class="container">
+    <div class="section-head">
+      <div class="eyebrow">New Integration</div>
+      <h2>Why Tekla Structures connects differently</h2>
+      <p>Revit and Navisworks only expose their APIs to code running inside their own process. Tekla's Open API is built to be called from the outside.</p>
+    </div>
+    <div class="grid-3">
+      <div class="card">
+        <h3>① No in-process add-in required</h3>
+        <p><code>new Tekla.Structures.Model.Model()</code> from any external .NET process connects straight to the running Tekla Structures session over Tekla's own remoting layer.</p>
+      </div>
+      <div class="card">
+        <h3>② Runs as its own service</h3>
+        <p>The bridge can be started, stopped, and updated independently of Tekla itself — no reloading an add-in, no restarting Tekla to pick up a fix.</p>
+      </div>
+      <div class="card">
+        <h3>③ Same contract as the others</h3>
+        <p><code>GET /health</code> and <code>POST /tools/:name</code> — identical shape to the Revit and Navisworks bridges, so the MCP server treats all three uniformly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="install" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Installation</div>
+      <h2>Get the server running</h2>
+      <p>No one-click installer yet — this is a fresh scaffold. Manual setup for now, see each component's README for detail.</p>
+    </div>
+
+    <div class="code-block"><span class="comment"># 1. Build the MCP server</span>
+cd server
+npm install
+npm run build
+
+<span class="comment"># 2. Build the Tekla bridge (after setting TeklaStructuresBin — see plugins/Tekla/README.md)</span>
+cd ../plugins/Tekla/BimAzim.TeklaBridge
+dotnet build
+
+<span class="comment"># 3. Point your AI client at the server (see server/README.md for the full JSON)</span>
+</div>
+
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="n">1</div>
+        <div><h4>Build the server</h4><p>TypeScript MCP server in <code>server/</code> — registers all Revit/Navisworks/Tekla tools.</p></div>
+      </div>
+      <div class="install-step">
+        <div class="n">2</div>
+        <div><h4>Build the Tekla bridge</h4><p>Point <code>TeklaStructuresBin</code> at your install, verify the flagged API calls, then build.</p></div>
+      </div>
+      <div class="install-step">
+        <div class="n">3</div>
+        <div><h4>Point your AI client at it</h4><p>Add the server to Claude Desktop / Claude Code / Cursor's MCP config.</p></div>
+      </div>
+      <div class="install-step">
+        <div class="n">4</div>
+        <div><h4>Check engine status</h4><p>Ask your AI client to call <code>bimazim_engine_status</code> before anything else.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="container">
+    <p>BIM-AZIM — open source bridge between AI and Revit, Navisworks Manage &amp; Tekla Structures. Released under the MIT License.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
