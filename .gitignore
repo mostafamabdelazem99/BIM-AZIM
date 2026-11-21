@@ -10,3 +10,6 @@ plugins/**/obj/
 # OS
 Thumbs.db
 .DS_Store
+
+# Installer build output (attached to GitHub Releases instead)
+dist/
