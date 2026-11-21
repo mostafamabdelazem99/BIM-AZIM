@@ -58,6 +58,13 @@ export const revitIntegrationTools = [
   }),
 
   defineTool({
+    name: "revit_auth_status",
+    description: "Check the current Google authentication status.",
+    inputShape: {},
+    bridgeToolName: "auth_status",
+  }),
+
+  defineTool({
     name: "revit_list_google_spreadsheets",
     description: "List your Google Sheets spreadsheets. Requires Google sign-in first (revit_google_signin). Returns spreadsheet names, IDs, and last modified times.",
     inputShape: {
