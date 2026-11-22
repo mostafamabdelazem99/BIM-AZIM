@@ -268,64 +268,19 @@ function Build-NavisworksPlugin {
     return $installed
 }
 
-function Merge-McpConfig($configPath) {
-    # Windows PowerShell 5.1 has no -AsHashtable on ConvertFrom-Json, so this merges via
-    # PSCustomObject property manipulation instead.
-    $dir = Split-Path $configPath -Parent
-    if (-not (Test-Path $dir)) { return $false }
-
-    $config = $null
-    if (Test-Path $configPath) {
-        try { $config = Get-Content $configPath -Raw | ConvertFrom-Json } catch { $config = $null }
-    }
-    if (-not $config) { $config = [PSCustomObject]@{} }
-
-    if (-not ($config.PSObject.Properties.Name -contains "mcpServers")) {
-        $config | Add-Member -MemberType NoteProperty -Name "mcpServers" -Value ([PSCustomObject]@{})
-    }
-
-    $entry = [PSCustomObject]@{
-        command = "node"
-        args    = @($ServerEntry)
-        env     = [PSCustomObject]@{}
-    }
-
-    if ($config.mcpServers.PSObject.Properties.Name -contains "BIM-AZIM") {
-        $config.mcpServers.PSObject.Properties.Remove("BIM-AZIM")
-    }
-    $config.mcpServers | Add-Member -MemberType NoteProperty -Name "BIM-AZIM" -Value $entry
-
-    $config | ConvertTo-Json -Depth 10 | Set-Content $configPath -Encoding utf8
-    return $true
-}
-
 function Configure-AiClients {
-    Write-Step "Registering BIM-AZIM with installed AI clients"
+    Write-Step "Registering BIM-AZIM with every MCP-compatible AI client on this machine"
+    # Ported from BIM-Bot's own multi-client config writer (ai client config, repair-on-restale,
+    # TOML/YAML/JSON schema handling for 10 clients) - see server/scripts/configure-bimazim.cjs.
+    $nodeExe = (Get-Command node -ErrorAction SilentlyContinue).Source
+    if (-not $nodeExe) { $nodeExe = Join-Path $env:ProgramFiles "nodejs\node.exe" }
+    $configureScript = Join-Path $AppDir "server\scripts\configure-bimazim.cjs"
 
-    $targets = @(
-        @{ Name = "Claude Desktop"; Path = Join-Path $env:APPDATA "Claude\claude_desktop_config.json" }
-        @{ Name = "Cursor";         Path = Join-Path $env:USERPROFILE ".cursor\mcp.json" }
-        @{ Name = "VS Code (user)"; Path = Join-Path $env:APPDATA "Code\User\mcp.json" }
-    )
-
-    $configured = 0
-    foreach ($t in $targets) {
-        $clientDir = Split-Path $t.Path -Parent
-        if (-not (Test-Path $clientDir)) {
-            Write-Warn2 "$($t.Name) not found on this machine"
-            continue
-        }
-        if (Merge-McpConfig $t.Path) {
-            Write-Ok "Configured $($t.Name) ($($t.Path))"
-            $configured++
-        }
+    & $nodeExe $configureScript --node $nodeExe --server $ServerEntry 2>&1 | ForEach-Object {
+        if ($_ -match '^\s*(.+?): (added|repaired|removed)') { Write-Ok $_ }
+        elseif ($_ -match '^\s*(.+?): (not installed|no .+ file|no BIM-AZIM entry)') { Write-Warn2 $_ }
+        else { Write-Host "    $_" -ForegroundColor DarkGray }
     }
-
-    Write-Host ""
-    Write-Host "    Claude Code: run this once to register the server there too:" -ForegroundColor DarkGray
-    Write-Host "      claude mcp add bim-azim -- node `"$ServerEntry`"" -ForegroundColor DarkGray
-
-    return $configured
 }
 
 # ---- main ----
@@ -341,7 +296,7 @@ Build-Server
 $revitYears = Build-RevitPlugin
 $navisYears = Build-NavisworksPlugin
 $teklaReady = Build-TeklaBridge
-$clientsConfigured = Configure-AiClients
+Configure-AiClients
 
 Write-Host ""
 Write-Host "==================================================================" -ForegroundColor Cyan
@@ -351,7 +306,7 @@ Write-Host " MCP server:            ready ($ServerEntry)"
 Write-Host " Revit plugin:           $(if ($revitYears.Count -gt 0) { "installed for $($revitYears -join ', ')" } else { 'not installed (no Revit detected or build failed - see messages above)' })"
 Write-Host " Navisworks plugin:      $(if ($navisYears.Count -gt 0) { "installed for $($navisYears -join ', ')" } else { 'not installed (no Navisworks detected or build failed - see messages above)' })"
 Write-Host " Tekla bridge:           $(if ($teklaReady) { 'built - see plugins/Tekla/README.md to start it' } else { 'not built (see message above)' })"
-Write-Host " AI clients configured: $clientsConfigured"
+Write-Host " AI clients:             see 'Registering BIM-AZIM with every MCP-compatible AI client' above for exactly which ones got configured"
 Write-Host ""
 if ($revitYears.Count -gt 0) {
     Write-Host " Restart Revit so it picks up the new add-in (look for the 'BIM-AZIM' ribbon tab)." -ForegroundColor DarkGray
