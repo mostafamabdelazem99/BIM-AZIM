@@ -15,7 +15,7 @@ namespace BimAzimNavisPlugin
     [Plugin("BimAzimNavis", "BAZM",
         DisplayName = "BIM-AZIM",
         ToolTip = "AI coordination for Navisworks Manage (Claude / ChatGPT). Click to start or stop the service.")]
-    [AddInPlugin(AddInLocation.AddIn, CanToggle = true)]
+    [AddInPlugin(AddInLocation.AddIn, CanToggle = true, Icon = "icon16.ico", LargeIcon = "icon32.ico")]
     public class BimAzimNavisPlugin : AddInPlugin
     {
         public BimAzimNavisPlugin()

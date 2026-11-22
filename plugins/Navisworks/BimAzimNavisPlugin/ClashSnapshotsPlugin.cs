@@ -14,7 +14,7 @@ namespace BimAzimNavisPlugin
     [Plugin("BimAzimClashSnapshots", "BAZM",
         DisplayName = "Clash Snapshots",
         ToolTip = "Save a red/green image of every clash in a clash test, plus a CSV list, to a folder.")]
-    [AddInPlugin(AddInLocation.AddIn)]
+    [AddInPlugin(AddInLocation.AddIn, Icon = "icon16.ico", LargeIcon = "icon32.ico")]
     public class ClashSnapshotsPlugin : AddInPlugin
     {
         public override int Execute(string[] parameters)

@@ -7,20 +7,21 @@ namespace BimAzimPlugin.Core
 {
     /// <summary>
     /// Programmatic vector ribbon icons — pixel-perfect at any size.
-    /// Color palette (BIM Professional):
-    ///   Primary   #2563EB  (vivid blue)
-    ///   Dark      #1E40AF  (depth)
-    ///   Teal      #06B6D4  (accent)
-    ///   Amber     #F59E0B  (highlight)
+    /// Color palette (BIM-AZIM brand — matches the website's teal/amber identity, not
+    /// BIM-Bot's original blue):
+    ///   Primary   #0D7A73  (deep teal)
+    ///   Dark      #095a54  (depth)
+    ///   Teal      #2DD4C4  (bright teal accent)
+    ///   Amber     #E3792B  (BIM-AZIM's signature accent, used sparingly as highlight)
     ///   White     #FFFFFF  (surface details)
     /// </summary>
     public static class RibbonIcons
     {
         // ── Palette ──────────────────────────────────────────
-        static readonly Color CPrimary = Color.FromRgb(0x25, 0x63, 0xEB);
-        static readonly Color CDark    = Color.FromRgb(0x1E, 0x40, 0xAF);
-        static readonly Color CTeal    = Color.FromRgb(0x06, 0xB6, 0xD4);
-        static readonly Color CAmber   = Color.FromRgb(0xF5, 0x9E, 0x0B);
+        static readonly Color CPrimary = Color.FromRgb(0x0D, 0x7A, 0x73);
+        static readonly Color CDark    = Color.FromRgb(0x09, 0x5A, 0x54);
+        static readonly Color CTeal    = Color.FromRgb(0x2D, 0xD4, 0xC4);
+        static readonly Color CAmber   = Color.FromRgb(0xE3, 0x79, 0x2B);
         static readonly Color CGreen   = Color.FromRgb(0x10, 0xB9, 0x81);
         static readonly Color CRed     = Color.FromRgb(0xEF, 0x44, 0x44);
         static readonly Color CSlate   = Color.FromRgb(0x47, 0x55, 0x69);

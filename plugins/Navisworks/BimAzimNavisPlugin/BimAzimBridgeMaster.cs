@@ -15,7 +15,7 @@ namespace BimAzimNavisPlugin
     [Plugin("BimAzimBridge", "BAZM",
         DisplayName = "BIM-AZIM Bridge",
         ToolTip = "Start (or stop) a manual Navisworks-Revit bridge with this Navisworks as master. Then click Join Bridge in each Revit model.")]
-    [AddInPlugin(AddInLocation.AddIn)]
+    [AddInPlugin(AddInLocation.AddIn, Icon = "icon16.ico", LargeIcon = "icon32.ico")]
     public class BimAzimBridgeMaster : AddInPlugin
     {
         public override int Execute(string[] parameters)

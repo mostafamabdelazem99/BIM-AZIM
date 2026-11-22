@@ -62,6 +62,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Ribbon icons (BIM-AZIM brand mark, teal-to-amber gradient) for the three AddInPlugin
+         buttons below. LogicalName is the exact string the [AddInPlugin(Icon=..., LargeIcon=...)]
+         attributes reference — see each plugin class.
+         VERIFY: AddInPluginAttribute.Icon/LargeIcon are plain strings (confirmed via reflection on
+         the Navisworks API assembly), but this environment has no live Navisworks Manage to launch
+         and confirm the ribbon actually picks these up by that exact lookup convention — if it
+         doesn't render, check the current Navisworks SDK's AddInPlugin samples for the real
+         resource-name format expected (it may want a namespaced manifest name instead of a bare
+         LogicalName). -->
+    <EmbeddedResource Include="Resources\icon16.ico"><LogicalName>icon16.ico</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Resources\icon32.ico"><LogicalName>icon32.ico</LogicalName></EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Dashboard feature: default template only for this pass.
          BIM-AZIM TODO: BIM-Bot also embeds a custom "3D Viewer" PowerBI visual
          (bimBot3DViewer1A2B3C4D.pbiviz), Linked in from the sibling Revit plugin project so both

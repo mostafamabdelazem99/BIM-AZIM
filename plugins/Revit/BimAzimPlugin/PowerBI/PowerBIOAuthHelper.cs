@@ -344,7 +344,7 @@ namespace BimAzimPlugin.AI
             var icon = statusCode == 200 ? "✅" : "❌";
             var html = $@"
 <html>
-<body style=""font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:linear-gradient(135deg,#2563EB 0%,#1E40AF 100%);"">
+<body style=""font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:linear-gradient(135deg,#0D7A73 0%,#095A54 100%);"">
   <div style=""text-align:center;background:white;padding:40px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-width:420px;"">
     <div style=""font-size:64px;margin-bottom:16px;"">{icon}</div>
     <h1 style=""color:#333;margin:0 0 8px 0;"">{title}</h1>

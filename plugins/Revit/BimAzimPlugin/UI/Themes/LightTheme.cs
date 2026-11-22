@@ -17,10 +17,10 @@ namespace BimAzimPlugin.UI.Themes
         //  BRAND PALETTE — synced with RibbonIcons.cs
         // ══════════════════════════════════════════════════════════════
 
-        public static readonly Color BrandPrimary     = Color.FromRgb(0x25, 0x63, 0xEB);
-        public static readonly Color BrandDark        = Color.FromRgb(0x1E, 0x40, 0xAF);
-        public static readonly Color BrandTeal        = Color.FromRgb(0x06, 0xB6, 0xD4);
-        public static readonly Color BrandAmber       = Color.FromRgb(0xF5, 0x9E, 0x0B);
+        public static readonly Color BrandPrimary     = Color.FromRgb(0x0D, 0x7A, 0x73);
+        public static readonly Color BrandDark        = Color.FromRgb(0x09, 0x5A, 0x54);
+        public static readonly Color BrandTeal        = Color.FromRgb(0x2D, 0xD4, 0xC4);
+        public static readonly Color BrandAmber       = Color.FromRgb(0xE3, 0x79, 0x2B);
         public static readonly Color BrandGreen       = Color.FromRgb(0x10, 0xB9, 0x81);
         public static readonly Color BrandRed         = Color.FromRgb(0xEF, 0x44, 0x44);
 

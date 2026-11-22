@@ -47,13 +47,13 @@ namespace BimAzimPlugin.UI.Themes
         // ══════════════════════════════════════════════════════════════
 
         /// <summary>Primary vivid blue — main accent for buttons, links, active states. Matches ribbon icon primary.</summary>
-        public static readonly Color BrandPrimary     = Color.FromRgb(0x25, 0x63, 0xEB);
+        public static readonly Color BrandPrimary     = Color.FromRgb(0x0D, 0x7A, 0x73);
         /// <summary>Dark blue — pressed states, deeper accents. Matches ribbon icon dark.</summary>
-        public static readonly Color BrandDark        = Color.FromRgb(0x1E, 0x40, 0xAF);
+        public static readonly Color BrandDark        = Color.FromRgb(0x09, 0x5A, 0x54);
         /// <summary>Teal — secondary accent, info badges. Matches ribbon icon teal.</summary>
-        public static readonly Color BrandTeal        = Color.FromRgb(0x06, 0xB6, 0xD4);
+        public static readonly Color BrandTeal        = Color.FromRgb(0x2D, 0xD4, 0xC4);
         /// <summary>Amber — highlights, warnings, attention. Matches ribbon icon amber.</summary>
-        public static readonly Color BrandAmber       = Color.FromRgb(0xF5, 0x9E, 0x0B);
+        public static readonly Color BrandAmber       = Color.FromRgb(0xE3, 0x79, 0x2B);
         /// <summary>Emerald green — success, online, enabled. Matches ribbon icon green.</summary>
         public static readonly Color BrandGreen       = Color.FromRgb(0x10, 0xB9, 0x81);
         /// <summary>Red — errors, destructive actions, offline. Matches ribbon icon red.</summary>
