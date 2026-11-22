@@ -19,6 +19,7 @@
         BIM-AZIM
       </a>
       <div class="nav-links">
+        <a href="#showcase">Overview</a>
         <a href="#features">Features</a>
         <a href="#tools">Tools</a>
         <a href="#architecture">Architecture</a>
@@ -46,9 +47,9 @@
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num">20</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num">3</div><div class="label">BIM Engines</div></div>
-      <div class="stat"><div class="num">1</div><div class="label">New: Tekla Bridge</div></div>
+      <div class="stat"><div class="num" data-count="289">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="4">0</div><div class="label">BIM &amp; Visualization Engines</div></div>
+      <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
 
@@ -71,8 +72,130 @@
         <p class="ver">External Open API bridge · Trimble</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">U</div>
+        <h3>Unreal Engine</h3>
+        <p class="ver">Real-time visualization bridge</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
+
+  <section id="showcase" class="container">
+    <div class="section-head">
+      <div class="eyebrow">60-Second Overview</div>
+      <h2>What makes BIM-AZIM different</h2>
+      <p>An animated walkthrough of the architecture and engineering decisions — press play, or step through at your own pace.</p>
+    </div>
+
+    <div class="player" id="player">
+      <div class="player-screen">
+
+        <div class="scene active" data-scene="0">
+          <div class="scene-visual hub-visual">
+            <div class="hub-center">AZ</div>
+            <div class="hub-node hub-r"><span>R</span></div>
+            <div class="hub-node hub-n"><span>N</span></div>
+            <div class="hub-node hub-t"><span>T</span></div>
+            <div class="hub-node hub-u"><span>U</span></div>
+            <svg class="hub-lines" viewBox="0 0 400 260" preserveAspectRatio="none">
+              <line x1="200" y1="130" x2="80" y2="50" />
+              <line x1="200" y1="130" x2="320" y2="50" />
+              <line x1="200" y1="130" x2="80" y2="210" />
+              <line x1="200" y1="130" x2="320" y2="210" />
+            </svg>
+          </div>
+          <div class="scene-copy">
+            <h3>One MCP server, four engines</h3>
+            <p>Revit, Navisworks Manage, Tekla Structures and Unreal Engine — driven from a single conversation, instead of four disconnected tools.</p>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="1">
+          <div class="scene-visual count-visual">
+            <div class="big-count" data-target="289">0</div>
+            <div class="count-chips">
+              <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
+              <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
+              <span class="tag">QA/QC</span><span class="tag">MEP</span><span class="tag">Dashboards</span>
+            </div>
+          </div>
+          <div class="scene-copy">
+            <h3>289 real MCP tools</h3>
+            <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements, verified against ported, building source.</p>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="2">
+          <div class="scene-visual wire-visual">
+            <div class="wire-row">
+              <span class="wire-label">Revit / Navisworks</span>
+              <div class="wire-line solid"><span class="wire-chip">in-process add-in</span></div>
+            </div>
+            <div class="wire-row">
+              <span class="wire-label tekla-label">Tekla Structures</span>
+              <div class="wire-line dashed"><span class="wire-chip new">external bridge — no add-in required</span></div>
+            </div>
+          </div>
+          <div class="scene-copy">
+            <h3>Tekla, wired the way its API actually works</h3>
+            <p>Tekla's Open API connects to a running session from any external process. BIM-AZIM's bridge runs as its own service — restart it without touching Tekla.</p>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="3">
+          <div class="scene-visual clients-visual">
+            <span class="client-chip">Claude</span><span class="client-chip">ChatGPT</span>
+            <span class="client-chip">Gemini CLI</span><span class="client-chip">DeepSeek Harness</span>
+            <span class="client-chip">Cursor</span><span class="client-chip">Windsurf</span>
+            <span class="client-chip">VS Code</span><span class="client-chip">OpenCode</span>
+          </div>
+          <div class="scene-copy">
+            <h3>Speaks every MCP client's language</h3>
+            <p>One install script configures Claude Desktop, Claude Code, Cursor, Windsurf, Gemini CLI, VS Code, ChatGPT Desktop, OpenCode — and DeepSeek Harness, best-effort.</p>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="4">
+          <div class="scene-visual checklist-visual">
+            <div class="check-row"><span class="check-mark ok">&#10003;</span> Revit plugin — builds clean, 2 bands verified</div>
+            <div class="check-row"><span class="check-mark ok">&#10003;</span> Navisworks plugin — builds clean, 3 years verified</div>
+            <div class="check-row"><span class="check-mark warn">!</span> Tekla / Unreal bridges — ported, flagged unverified</div>
+            <div class="check-row"><span class="check-mark ok">&#10003;</span> Every MIT attribution preserved</div>
+          </div>
+          <div class="scene-copy">
+            <h3>Built honestly</h3>
+            <p>Gaps are documented in the code and docs, not hidden behind a confident demo. If something isn't verified, the README says so.</p>
+          </div>
+        </div>
+
+        <div class="scene" data-scene="5">
+          <div class="scene-visual closing-visual">
+            <div class="closing-mark">AZ</div>
+            <span class="pill">MIT LICENSED</span>
+          </div>
+          <div class="scene-copy">
+            <h3>Open source. Yours to extend.</h3>
+            <p>Fork it, read the code, add the next engine. BIM-AZIM grows the same way this one did — one real, verified tool at a time.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="player-controls">
+        <button id="player-toggle" class="player-btn" aria-label="Pause">&#10074;&#10074;</button>
+        <div class="player-dots">
+          <button class="player-dot active" data-goto="0"></button>
+          <button class="player-dot" data-goto="1"></button>
+          <button class="player-dot" data-goto="2"></button>
+          <button class="player-dot" data-goto="3"></button>
+          <button class="player-dot" data-goto="4"></button>
+          <button class="player-dot" data-goto="5"></button>
+        </div>
+        <div class="player-progress-track"><div class="player-progress-fill" id="player-progress"></div></div>
+      </div>
+    </div>
+  </section>
 
   <section id="features" class="container">
     <div class="section-head">

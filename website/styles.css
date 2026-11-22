@@ -200,13 +200,164 @@ a { color: inherit; }
 .stat .num { font-size: 2rem; font-weight: 800; color: var(--accent-bright); }
 .stat .label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); }
 
+/* ---------- Showcase player ---------- */
+.player {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.player-screen {
+  position: relative;
+  aspect-ratio: 16 / 8;
+  background: var(--code-bg);
+}
+.scene {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 40px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease;
+}
+.scene.active { opacity: 1; visibility: visible; }
+.scene-copy h3 { font-size: 1.3rem; margin: 0 0 10px; text-wrap: balance; }
+.scene-copy p { font-size: 14px; color: var(--text-dim); margin: 0; }
+
+/* Scene 0: hub */
+.hub-visual { position: relative; height: 220px; }
+.hub-center {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 56px; height: 56px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), var(--tekla-accent));
+  color: #04201d; font-family: "Archivo", sans-serif; font-weight: 800; font-size: 15px;
+  display: grid; place-items: center; z-index: 2;
+  animation: pulse 2.6s ease-in-out infinite;
+}
+.hub-node {
+  position: absolute; width: 42px; height: 42px; border-radius: 10px;
+  background: var(--bg-elevated); border: 1px solid var(--border);
+  display: grid; place-items: center; font-family: "IBM Plex Mono", monospace; font-weight: 600;
+  z-index: 2; opacity: 0; animation: nodeIn 0.6s ease forwards;
+}
+.hub-r { left: 18%; top: 12%; animation-delay: 0.15s; }
+.hub-n { right: 18%; top: 12%; animation-delay: 0.3s; }
+.hub-t { left: 18%; bottom: 12%; animation-delay: 0.45s; color: var(--tekla-accent); border-color: color-mix(in srgb, var(--tekla-accent) 40%, var(--border)); }
+.hub-u { right: 18%; bottom: 12%; animation-delay: 0.6s; }
+.hub-lines { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hub-lines line { stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 4 4; }
+@keyframes nodeIn { from { opacity: 0; transform: scale(0.6); } to { opacity: 1; transform: scale(1); } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent); } 50% { box-shadow: 0 0 0 10px transparent; } }
+
+/* Scene 1: tool count */
+.count-visual { text-align: center; }
+.big-count {
+  font-family: "Archivo", sans-serif; font-weight: 800; font-size: 4rem;
+  color: var(--accent-bright); font-variant-numeric: tabular-nums; line-height: 1;
+}
+.count-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 16px; }
+
+/* Scene 2: wire diagram */
+.wire-visual { display: flex; flex-direction: column; gap: 28px; }
+.wire-row { display: flex; flex-direction: column; gap: 8px; }
+.wire-label { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-faint); }
+.tekla-label { color: var(--tekla-accent); }
+.wire-line { position: relative; height: 2px; background: var(--border); }
+.wire-line.dashed { background: none; border-top: 2px dashed var(--tekla-accent); }
+.wire-chip {
+  position: absolute; top: -12px; left: 0;
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 999px;
+  padding: 4px 10px; font-size: 11.5px; white-space: nowrap;
+}
+.wire-chip.new { border-color: color-mix(in srgb, var(--tekla-accent) 50%, var(--border)); color: var(--tekla-accent); }
+
+/* Scene 3: AI clients */
+.clients-visual { display: flex; flex-wrap: wrap; gap: 8px; align-content: center; }
+.client-chip {
+  background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 999px;
+  padding: 7px 14px; font-size: 12.5px; font-weight: 600; opacity: 0;
+  animation: nodeIn 0.5s ease forwards;
+}
+.scene[data-scene="3"].active .client-chip:nth-child(1) { animation-delay: 0.05s; }
+.scene[data-scene="3"].active .client-chip:nth-child(2) { animation-delay: 0.15s; }
+.scene[data-scene="3"].active .client-chip:nth-child(3) { animation-delay: 0.25s; }
+.scene[data-scene="3"].active .client-chip:nth-child(4) { animation-delay: 0.35s; }
+.scene[data-scene="3"].active .client-chip:nth-child(5) { animation-delay: 0.45s; }
+.scene[data-scene="3"].active .client-chip:nth-child(6) { animation-delay: 0.55s; }
+.scene[data-scene="3"].active .client-chip:nth-child(7) { animation-delay: 0.65s; }
+.scene[data-scene="3"].active .client-chip:nth-child(8) { animation-delay: 0.75s; }
+
+/* Scene 4: checklist */
+.checklist-visual { display: flex; flex-direction: column; gap: 14px; }
+.check-row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; }
+.check-mark {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  display: grid; place-items: center; font-size: 12px; font-weight: 800;
+}
+.check-mark.ok { background: var(--accent-soft); color: var(--accent-bright); }
+.check-mark.warn { background: color-mix(in srgb, var(--tekla-accent) 20%, transparent); color: var(--tekla-accent); }
+
+/* Scene 5: closing */
+.closing-visual { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+.closing-mark {
+  width: 72px; height: 72px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--accent), var(--tekla-accent));
+  color: #04201d; font-family: "Archivo", sans-serif; font-weight: 800; font-size: 20px;
+  display: grid; place-items: center;
+}
+
+@media (max-width: 760px) {
+  .scene { grid-template-columns: 1fr; padding: 20px 22px; gap: 12px; }
+  .player-screen { aspect-ratio: 3 / 4; }
+  .hub-visual { height: 160px; }
+  .big-count { font-size: 2.6rem; }
+}
+
+.player-controls {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 20px; border-top: 1px solid var(--border);
+}
+.player-btn {
+  flex: none; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-contrast); border: none; cursor: pointer;
+  font-size: 11px; display: grid; place-items: center;
+}
+.player-dots { display: flex; gap: 7px; }
+.player-dot {
+  width: 8px; height: 8px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--border); padding: 0;
+}
+.player-dot.active { background: var(--accent-bright); }
+.player-progress-track {
+  flex: 1; height: 3px; border-radius: 999px; background: var(--border); overflow: hidden;
+}
+.player-progress-fill {
+  height: 100%; width: 0%; background: var(--accent-bright);
+  transition: width 0.1s linear;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-center { animation: none; }
+  .hub-node, .client-chip { animation: none; opacity: 1; }
+}
+
 /* ---------- Engines row ---------- */
 .engines {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   margin: 64px auto 0;
-  max-width: 980px;
+  max-width: 1180px;
+}
+@media (max-width: 900px) {
+  .engines { grid-template-columns: repeat(2, 1fr); max-width: 640px; }
 }
 .engine-card {
   background: var(--bg-card);
