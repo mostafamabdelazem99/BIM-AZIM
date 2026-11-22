@@ -14,8 +14,11 @@
     printed so you can copy it yourself, or re-run this installer as Administrator.
   - Tekla Structures: builds the bridge IF Tekla Structures is detected (its Open API DLLs are
     proprietary and only exist inside a real Tekla install - this installer cannot bundle them).
+  - Unreal Engine: installs the standalone Unreal MCP server's npm dependencies (no build step).
+    Its C++ editor plugin (plugins/Unreal/) is NOT built or deployed by this installer - no local
+    Unreal Engine install can be assumed, so that half stays a manual step, see its own README.
 
-  Finally it registers the MCP server with any supported AI clients found on this machine.
+  Finally it registers the MCP server(s) with any supported AI clients found on this machine.
 
   Usage:
     irm https://raw.githubusercontent.com/mostafamabdelazem99/BIM-AZIM/main/install.ps1 | iex
@@ -130,6 +133,33 @@ function Build-Server {
     }
     if (-not (Test-Path $ServerEntry)) { throw "Server build did not produce $ServerEntry" }
     Write-Ok "Server built at $ServerEntry"
+}
+
+function Build-UnrealServer {
+    Write-Step "Setting up the Unreal Engine server"
+    $unrealDir = Join-Path $AppDir "unreal\server"
+    $unrealEntry = Join-Path $unrealDir "src\index.js"
+    if (-not (Test-Path $unrealEntry)) {
+        Write-Warn2 "unreal/server not found in this checkout - skipping"
+        return $false
+    }
+
+    # Plain CommonJS, no build step - but it DOES have real npm dependencies
+    # (@modelcontextprotocol/sdk, zod) that must be installed, or every AI client config this
+    # installer writes an entry for will point at a server that crashes on launch.
+    Push-Location $unrealDir
+    try {
+        & npm install --no-fund --no-audit | Out-Null
+    } finally {
+        Pop-Location
+    }
+
+    if (-not (Test-Path (Join-Path $unrealDir "node_modules\@modelcontextprotocol"))) {
+        Write-Warn2 "npm install did not produce node_modules for unreal/server - the BIM-AZIM-Unreal client entry will not work"
+        return $false
+    }
+    Write-Ok "Unreal server dependencies installed ($unrealEntry)"
+    return $true
 }
 
 function Build-TeklaBridge {
@@ -287,12 +317,13 @@ function Configure-AiClients {
 
 Write-Host ""
 Write-Host "  BIM-AZIM installer" -ForegroundColor Magenta
-Write-Host "  AI automation for Revit, Navisworks Manage and Tekla Structures" -ForegroundColor DarkGray
+Write-Host "  AI automation for Revit, Navisworks Manage, Tekla Structures and Unreal Engine" -ForegroundColor DarkGray
 Write-Host ""
 
 Ensure-Node
 Download-Source
 Build-Server
+$unrealReady = Build-UnrealServer
 $revitYears = Build-RevitPlugin
 $navisYears = Build-NavisworksPlugin
 $teklaReady = Build-TeklaBridge
@@ -306,6 +337,7 @@ Write-Host " MCP server:            ready ($ServerEntry)"
 Write-Host " Revit plugin:           $(if ($revitYears.Count -gt 0) { "installed for $($revitYears -join ', ')" } else { 'not installed (no Revit detected or build failed - see messages above)' })"
 Write-Host " Navisworks plugin:      $(if ($navisYears.Count -gt 0) { "installed for $($navisYears -join ', ')" } else { 'not installed (no Navisworks detected or build failed - see messages above)' })"
 Write-Host " Tekla bridge:           $(if ($teklaReady) { 'built - see plugins/Tekla/README.md to start it' } else { 'not built (see message above)' })"
+Write-Host " Unreal server:          $(if ($unrealReady) { 'dependencies installed - the C++ plugin itself is unverified, see plugins/Unreal/README.md' } else { 'not ready (see message above) - the BIM-AZIM-Unreal client entry will not work yet' })"
 Write-Host " AI clients:             see 'Registering BIM-AZIM with every MCP-compatible AI client' above for exactly which ones got configured"
 Write-Host ""
 if ($revitYears.Count -gt 0) {
