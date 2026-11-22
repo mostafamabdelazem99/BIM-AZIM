@@ -62,6 +62,74 @@
   counters.forEach((el) => observer.observe(el));
 })();
 
+// Chat simulation: tabbed, scripted conversations with staggered message reveal
+(function () {
+  const chat = document.getElementById("sim-chat");
+  if (!chat) return;
+
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const tabs = Array.from(document.querySelectorAll(".sim-tab"));
+  const scripts = Array.from(chat.querySelectorAll(".sim-script"));
+  const replayBtn = document.getElementById("sim-replay");
+  let timers = [];
+
+  function clearTimers() {
+    timers.forEach((t) => clearTimeout(t));
+    timers = [];
+  }
+
+  function play(scriptName) {
+    clearTimers();
+    scripts.forEach((s) => {
+      s.hidden = s.dataset.script !== scriptName;
+      s.querySelectorAll(".sim-msg").forEach((m) => m.classList.remove("visible"));
+    });
+
+    const active = scripts.find((s) => s.dataset.script === scriptName);
+    if (!active) return;
+    const messages = Array.from(active.querySelectorAll(".sim-msg"));
+
+    if (reduceMotion) {
+      messages.forEach((m) => m.classList.add("visible"));
+      return;
+    }
+
+    messages.forEach((m) => {
+      const delay = Number(m.dataset.at) || 0;
+      timers.push(setTimeout(() => {
+        m.classList.add("visible");
+        chat.scrollTop = chat.scrollHeight;
+      }, delay));
+    });
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.classList.remove("active"));
+      tab.classList.add("active");
+      play(tab.dataset.sim);
+    });
+  });
+
+  if (replayBtn) {
+    replayBtn.addEventListener("click", () => {
+      const activeTab = tabs.find((t) => t.classList.contains("active"));
+      if (activeTab) play(activeTab.dataset.sim);
+    });
+  }
+
+  // Start the first scenario once it scrolls into view, not immediately on load.
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        play("revit");
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(chat);
+})();
+
 // Showcase player: auto-advancing animated scenes, with manual controls
 (function () {
   const player = document.getElementById("player");

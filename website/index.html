@@ -20,6 +20,7 @@
       </a>
       <div class="nav-links">
         <a href="#showcase">Overview</a>
+        <a href="#simulation">See It Work</a>
         <a href="#features">Features</a>
         <a href="#tools">Tools</a>
         <a href="#architecture">Architecture</a>
@@ -194,6 +195,102 @@
         </div>
         <div class="player-progress-track"><div class="player-progress-fill" id="player-progress"></div></div>
       </div>
+    </div>
+  </section>
+
+  <section id="simulation" class="container">
+    <div class="section-head">
+      <div class="eyebrow">See It Work</div>
+      <h2>A real conversation, not a mockup</h2>
+      <p>These are BIM-AZIM's actual tool names and argument shapes — the same JSON that goes over the wire. Pick an engine.</p>
+    </div>
+
+    <div class="sim">
+      <div class="sim-tabs">
+        <button class="sim-tab active" data-sim="revit">Revit</button>
+        <button class="sim-tab" data-sim="navis">Navisworks</button>
+        <button class="sim-tab" data-sim="tekla">Tekla Structures</button>
+      </div>
+
+      <div class="sim-window">
+        <div class="sim-titlebar">
+          <span class="sim-dot r"></span><span class="sim-dot y"></span><span class="sim-dot g"></span>
+          <span class="sim-titletext">Claude Desktop — connected to BIM-AZIM</span>
+          <button class="sim-replay" id="sim-replay" aria-label="Replay">&#8635; Replay</button>
+        </div>
+
+        <div class="sim-chat" id="sim-chat">
+
+          <!-- Revit scenario -->
+          <div class="sim-script" data-script="revit">
+            <div class="sim-msg user" data-at="200">Create a 20&nbsp;ft wall on Level 1 from (0,0) to (20,0)</div>
+            <div class="sim-msg call" data-at="1100">
+              <div class="sim-call-label">Calling <code>revit_create_wall</code></div>
+              <pre>{
+  "startX": 0, "startY": 0,
+  "endX": 20, "endY": 0,
+  "levelName": "Level 1"
+}</pre>
+            </div>
+            <div class="sim-msg result" data-at="2200">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "elementId": 391021, "length": 20 }</pre>
+            </div>
+            <div class="sim-msg assistant" data-at="3000">Done — created a 20&nbsp;ft wall on Level 1 (element ID 391021).</div>
+          </div>
+
+          <!-- Navisworks scenario -->
+          <div class="sim-script" data-script="navis" hidden>
+            <div class="sim-msg user" data-at="200">Run the "MEP vs Structure" clash test and tell me what's still open</div>
+            <div class="sim-msg call" data-at="1100">
+              <div class="sim-call-label">Calling <code>navis_run_clash_test</code></div>
+              <pre>{ "test": "MEP vs Structure" }</pre>
+            </div>
+            <div class="sim-msg result" data-at="2000">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "test": "MEP vs Structure", "resultCount": 14 }</pre>
+            </div>
+            <div class="sim-msg call" data-at="2700">
+              <div class="sim-call-label">Calling <code>navis_get_clash_results</code></div>
+              <pre>{ "test": "MEP vs Structure", "statusFilter": "New" }</pre>
+            </div>
+            <div class="sim-msg result" data-at="3600">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "count": 6, "worst": { "distance": 0.12,
+    "items": ["Duct 203", "Beam 88"] } }</pre>
+            </div>
+            <div class="sim-msg assistant" data-at="4400">14 clashes total, 6 still New. Worst is a 0.12&nbsp;ft overlap between Duct 203 and Beam 88.</div>
+          </div>
+
+          <!-- Tekla scenario -->
+          <div class="sim-script" data-script="tekla" hidden>
+            <div class="sim-msg user" data-at="200">Add an HEA200 beam from (0,0,0) to (6000,0,0), then check it for interferences</div>
+            <div class="sim-msg call" data-at="1100">
+              <div class="sim-call-label">Calling <code>tekla_create_beam</code></div>
+              <pre>{
+  "startPoint": [0, 0, 0],
+  "endPoint": [6000, 0, 0],
+  "profile": "HEA200"
+}</pre>
+            </div>
+            <div class="sim-msg result" data-at="2300">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "guid": "a1b2c3d4-e5f6-..." }</pre>
+            </div>
+            <div class="sim-msg call" data-at="3000">
+              <div class="sim-call-label">Calling <code>tekla_check_interference</code></div>
+              <pre>{ "guids": ["a1b2c3d4-e5f6-..."] }</pre>
+            </div>
+            <div class="sim-msg result" data-at="3900">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "checkedParts": 1, "clashCount": 0 }</pre>
+            </div>
+            <div class="sim-msg assistant" data-at="4600">Beam created — HEA200, 6&nbsp;m long. No interferences detected against nearby parts.</div>
+          </div>
+
+        </div>
+      </div>
+      <p class="sim-footnote">Field names and example values are copied directly from <code>server/src/tools/</code> — nothing here is invented for the demo.</p>
     </div>
   </section>
 
