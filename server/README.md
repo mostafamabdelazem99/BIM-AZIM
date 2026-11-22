@@ -1,8 +1,8 @@
 # BIM-AZIM MCP Server
 
-TypeScript MCP server exposing Revit, Navisworks Manage, and Tekla Structures tools to any
-MCP-compatible AI client. See [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the full
-picture.
+TypeScript MCP server exposing 289 Revit, Navisworks Manage, and Tekla Structures tools to any
+MCP-compatible AI client. (Unreal Engine is a separate server — see `../unreal/README.md`.) See
+[`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the full picture.
 
 ## Setup
 
@@ -17,7 +17,9 @@ TypeScript with file-watching (via `tsx`).
 
 ## Configuring your AI client
 
-Add to `claude_desktop_config.json` (or the equivalent for your MCP client):
+The easiest way is `../install.ps1` — it detects and configures every MCP client on your machine
+automatically via `scripts/configure-bimazim.cjs`. To do it by hand, add to
+`claude_desktop_config.json` (or the equivalent for your MCP client):
 
 ```json
 {
@@ -35,10 +37,13 @@ Add to `claude_desktop_config.json` (or the equivalent for your MCP client):
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `BIMAZIM_REVIT_PORT` | `8080` | Port the Revit add-in's HTTP bridge listens on |
-| `BIMAZIM_NAVIS_PORT` | `8091` | Port the Navisworks add-in's HTTP bridge listens on |
-| `BIMAZIM_TEKLA_PORT` | `8092` | Port the Tekla bridge service listens on |
+| `BIMAZIM_REVIT_PORT` | `8082` | Port the Revit add-in's TCP bridge listens on (not BIM-Bot's 8080, so both can run side by side) |
+| `BIMAZIM_NAVIS_PORT` | `8093` | Port the Navisworks add-in's TCP bridge listens on (not BIM-Bot's 8091) |
+| `BIMAZIM_TEKLA_PORT` | `8092` | Port the Tekla bridge service (plain HTTP, unlike the two above) listens on |
 | `BIMAZIM_REQUEST_TIMEOUT_MS` | `15000` | Per-call timeout when talking to any engine bridge |
+
+Revit and Navisworks use a TCP JSON-RPC bridge (`bridge/tcp-engine-client.ts`), not HTTP — see
+`../docs/ARCHITECTURE.md` for why Tekla's bridge is HTTP while these two aren't.
 
 ## Adding a new tool
 
