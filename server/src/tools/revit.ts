@@ -765,16 +765,6 @@ export const revitTools = [
   }),
 
   defineTool({
-    name: "revit_ai_element_filter",
-    description: "Use natural language to filter elements. Describe what you want to find and the system will translate it to Revit filters, e.g. 'all doors wider than 900mm in Level 1'. Returns matching elements with their IDs (use select_elements to highlight them).",
-    inputShape: {
-      query: z.string().describe("Natural language description of elements to find, e.g. 'all walls taller than 3 m'"),
-      category: z.string().optional().describe("Optional category hint to narrow the search"),
-    },
-    bridgeToolName: "generate_dynamic_schedule",
-  }),
-
-  defineTool({
     name: "revit_reset_view",
     description: "Reset the current view to default settings (zoom extents, clear overrides).",
     inputShape: {
@@ -1064,17 +1054,6 @@ export const revitTools = [
       isInstance: z.boolean().optional().describe("Instance parameter (true) or Type parameter (false). Default: true"),
     },
     bridgeToolName: "add_shared_parameter",
-  }),
-
-  defineTool({
-    name: "revit_import_data_from_csv",
-    description: "Import data from a CSV file into Revit element parameters. CSV header row = parameter names. Matches elements by a key parameter (e.g. room Number).",
-    inputShape: {
-      filePath: z.string().describe("Absolute path to the CSV file"),
-      category: z.string().optional().describe("Category to match elements in"),
-      keyParameter: z.string().optional().describe("Parameter to match CSV rows to elements (default: 'Number'). Use 'Id' for element IDs."),
-    },
-    bridgeToolName: "import_data_from_csv",
   }),
 
   defineTool({
