@@ -8,6 +8,12 @@ unreal/server/node_modules/
 plugins/**/bin/
 plugins/**/obj/
 
+# Unreal Engine build artifacts (created once plugins/Unreal/ is built inside a real UE project)
+plugins/Unreal/**/Binaries/
+plugins/Unreal/**/Intermediate/
+plugins/Unreal/**/Saved/
+plugins/Unreal/**/DerivedDataCache/
+
 # OS
 Thumbs.db
 .DS_Store
