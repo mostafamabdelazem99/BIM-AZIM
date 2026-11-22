@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Portions of this project — the Revit plugin (plugins/Revit/), Navisworks Manage plugin
-(plugins/Navisworks/), Unreal Engine integration (plugins/Unreal/, unreal/server/), and their
-corresponding MCP tool definitions in server/src/tools/ — are ported and adapted from the
-open-source BIM-Bot project (https://github.com/HassanElmathary/BIM-Bot), used here under the
-same MIT License:
-
-Copyright (c) 2026 Hassan Ahmed Elmathary

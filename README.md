@@ -12,6 +12,8 @@ stubs. **Tekla Structures** is BIM-AZIM's own addition, wired the way Tekla's Op
 works (an external bridge, not an in-process add-in — see `docs/ARCHITECTURE.md`). **Unreal
 Engine** is a separate, standalone MCP server for real-time visualization.
 
+MIT licensed — see [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE) for third-party attribution.
+
 ```
 AI Client (Claude / ChatGPT / Gemini / Cursor / VS Code / ...)
         │  MCP protocol (stdio / JSON-RPC)

@@ -1,0 +1,20 @@
+BIM-AZIM
+Copyright (c) 2026 mostafamabdelazem99
+Licensed under the MIT License — see LICENSE.
+
+Third-party attribution
+-----------------------
+Portions of this project are ported and adapted from the open-source BIM-Bot project
+(https://github.com/HassanElmathary/BIM-Bot), used here under the same MIT License:
+
+  Copyright (c) 2026 Hassan Ahmed Elmathary
+
+The adapted portions are:
+  - plugins/Revit/         — the Revit add-in
+  - plugins/Navisworks/    — the Navisworks Manage add-in
+  - plugins/Unreal/        — the Unreal Engine editor plugin
+  - unreal/server/         — the standalone Unreal Engine MCP server
+  - server/src/tools/      — the MCP tool definitions corresponding to the above
+
+Everything else in this repository (the Tekla Structures bridge, the website, install.ps1,
+and the core MCP server architecture) is BIM-AZIM's own original work.
