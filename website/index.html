@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIM-AZIM — Built Like Iron. AI Automation for Revit, Navisworks, Tekla &amp; Office</title>
-  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that trains Autodesk Revit, Navisworks Manage, Tekla Structures (Trimble), Unreal Engine, and Microsoft Office into one AI-driven workflow — built heavy, built honest." />
+  <title>BIM-AZIM — AI Automation Console for Revit, Navisworks, Tekla &amp; Office</title>
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks Manage, Tekla Structures (Trimble), Unreal Engine, and Microsoft Office from one engineering-grade automation layer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -30,21 +30,21 @@
       </div>
       <div style="display:flex; align-items:center; gap:14px;">
         <button id="theme-toggle" aria-label="Toggle theme" style="background:none;border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;color:var(--text);">◐</button>
-        <a class="nav-cta" href="#install">Start Training</a>
+        <a class="nav-cta" href="#install">Launch Console</a>
       </div>
     </div>
   </nav>
 
   <header id="top" class="hero container">
-    <div class="badge"><span class="dot"></span> Open Source &amp; Free — No Spotter Needed</div>
-    <h1>Built Like <span class="grad">Iron.</span><br/>Runs Like a <span class="grad">PR.</span></h1>
+    <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
+    <h1>One Server. <span class="grad">Four Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
-      One MCP server, four engines under the bar — plus direct Microsoft Office output. BIM-AZIM
-      trains Autodesk Revit, Navisworks Manage, Tekla Structures (Trimble), and Unreal Engine the
-      same way a lifter trains for a meet: heavy, consistent, zero shortcuts.
+      A single MCP server drives Autodesk Revit, Navisworks Manage, Tekla Structures (Trimble),
+      and Unreal Engine — plus direct Microsoft Office output — from one conversation, with the
+      same precision an engineering drawing demands.
     </p>
     <div class="hero-ctas">
-      <a class="btn-primary" href="#install">Start Training</a>
+      <a class="btn-primary" href="#install">Launch Console</a>
       <a class="btn-secondary" href="#tekla">See the Tekla Integration</a>
     </div>
 
@@ -84,20 +84,21 @@
   </header>
 
   <div class="container">
-    <div class="barbell-divider" aria-hidden="true">
-      <svg viewBox="0 0 400 40" xmlns="http://www.w3.org/2000/svg">
-        <rect class="plate" x="4" y="4" width="14" height="32" rx="3" />
-        <rect class="plate" x="22" y="10" width="10" height="20" rx="2" />
-        <rect class="bar" x="34" y="17" width="332" height="6" rx="3" />
-        <rect class="plate" x="368" y="10" width="10" height="20" rx="2" />
-        <rect class="plate" x="382" y="4" width="14" height="32" rx="3" />
+    <div class="dimension-divider" aria-hidden="true">
+      <svg viewBox="0 0 400 24" xmlns="http://www.w3.org/2000/svg">
+        <line class="dim-tick" x1="4" y1="4" x2="4" y2="20" stroke-width="1.5" />
+        <line class="dim-line" x1="4" y1="12" x2="396" y2="12" stroke-width="1.5" />
+        <line class="dim-tick" x1="396" y1="4" x2="396" y2="20" stroke-width="1.5" />
+        <path class="dim-arrow" d="M4 12 L13 8 L13 16 Z" />
+        <path class="dim-arrow" d="M396 12 L387 8 L387 16 Z" />
+        <text class="dim-label" x="200" y="9" text-anchor="middle">SCALE N.T.S.</text>
       </svg>
     </div>
   </div>
 
   <section id="showcase" class="container">
     <div class="section-head">
-      <div class="eyebrow">Warm-Up Set</div>
+      <div class="eyebrow">System Overview</div>
       <h2>What makes BIM-AZIM different</h2>
       <p>An animated walkthrough of the architecture and engineering decisions — press play, or step through at your own pace.</p>
     </div>
@@ -214,7 +215,7 @@
 
   <section id="simulation" class="container">
     <div class="section-head">
-      <div class="eyebrow">No Skipped Sets</div>
+      <div class="eyebrow">Live Session</div>
       <h2>A real conversation, not a mockup</h2>
       <p>These are BIM-AZIM's actual tool names and argument shapes — the same JSON that goes over the wire. Pick an engine.</p>
     </div>
@@ -316,7 +317,7 @@
     </div>
     <div class="grid-3">
       <div class="card feature-new">
-        <div class="icon">🏋️</div>
+        <div class="icon">📐</div>
         <h3>Tekla Structures Bridge <span class="pill new">NEW</span></h3>
         <p>Connects to a running Tekla Structures session via the Tekla Open API — read/select/create/modify parts, run numbering, and export IFC, driven entirely from chat.</p>
         <div class="tag-row"><span class="tag">Beams &amp; Columns</span><span class="tag">Contour Plates</span><span class="tag">Numbering</span><span class="tag">IFC Export</span></div>
@@ -334,13 +335,13 @@
         <div class="tag-row"><span class="tag">MCP Protocol</span><span class="tag">Context-Aware</span></div>
       </div>
       <div class="card feature-new">
-        <div class="icon">🥊</div>
+        <div class="icon">🧱</div>
         <h3>Cross-Engine Interference Check <span class="pill new">NEW</span></h3>
         <p>A lightweight bounding-box clash pass inside the Tekla bridge itself — a quick sanity check on a structural model without needing a separate Navisworks seat.</p>
         <div class="tag-row"><span class="tag">No Navisworks Required</span><span class="tag">Fast</span></div>
       </div>
       <div class="card">
-        <div class="icon">💪</div>
+        <div class="icon">🧭</div>
         <h3>Four Parallel Engines</h3>
         <p>Revit and Navisworks Manage run in-process, the same proven way established BIM-AI tools work. Tekla and Unreal connect out-of-process — see why in the architecture docs.</p>
         <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">Unreal</span></div>
@@ -362,7 +363,7 @@
 
   <section id="tools" class="container">
     <div class="section-head">
-      <div class="eyebrow">The Rack</div>
+      <div class="eyebrow">Tool Catalog</div>
       <h2>MCP tools by engine</h2>
       <p>A sample of the real tool catalog — 293 tools total across Revit, Navisworks, Tekla, and Office. Full list in <code>server/src/tools/</code>.</p>
     </div>
@@ -411,7 +412,7 @@
 
   <section id="architecture" class="container">
     <div class="section-head">
-      <div class="eyebrow">Under the Bar</div>
+      <div class="eyebrow">System Architecture</div>
       <h2>How it works</h2>
       <p>A layered design connecting AI to four different BIM &amp; visualization APIs, plus direct Office output — each wired the way its own API actually works.</p>
     </div>
@@ -479,7 +480,7 @@
 
   <section id="license" class="container">
     <div class="section-head">
-      <div class="eyebrow">Join The Roster</div>
+      <div class="eyebrow">Access Registry</div>
       <h2>Request Your License</h2>
       <p>Submit your username and email below. The admin reviews every request personally and replies by email — approved users show up in the public roster underneath.</p>
     </div>
@@ -510,7 +511,7 @@
 
   <section id="install" class="container">
     <div class="section-head">
-      <div class="eyebrow">Leg Day — No Excuses</div>
+      <div class="eyebrow">Deployment</div>
       <h2>Get BIM-AZIM running</h2>
       <p>One installer sets up the MCP server, builds the Tekla bridge if Tekla Structures is on your PC, and registers itself with your AI client. Office tools work immediately — no Word/Excel/PowerPoint install required.</p>
     </div>
@@ -575,19 +576,25 @@ dotnet build
   </section>
 
   <div class="container">
-    <div class="barbell-divider" aria-hidden="true">
-      <svg viewBox="0 0 400 40" xmlns="http://www.w3.org/2000/svg">
-        <rect class="plate" x="4" y="4" width="14" height="32" rx="3" />
-        <rect class="plate" x="22" y="10" width="10" height="20" rx="2" />
-        <rect class="bar" x="34" y="17" width="332" height="6" rx="3" />
-        <rect class="plate" x="368" y="10" width="10" height="20" rx="2" />
-        <rect class="plate" x="382" y="4" width="14" height="32" rx="3" />
+    <div class="dimension-divider" aria-hidden="true">
+      <svg viewBox="0 0 400 24" xmlns="http://www.w3.org/2000/svg">
+        <line class="dim-tick" x1="4" y1="4" x2="4" y2="20" stroke-width="1.5" />
+        <line class="dim-line" x1="4" y1="12" x2="396" y2="12" stroke-width="1.5" />
+        <line class="dim-tick" x1="396" y1="4" x2="396" y2="20" stroke-width="1.5" />
+        <path class="dim-arrow" d="M4 12 L13 8 L13 16 Z" />
+        <path class="dim-arrow" d="M396 12 L387 8 L387 16 Z" />
+        <text class="dim-label" x="200" y="9" text-anchor="middle">END OF DRAWING</text>
       </svg>
     </div>
   </div>
 
-  <footer class="container">
-    <p>BIM-AZIM — open source training partner for Revit, Navisworks Manage, Tekla Structures, Unreal Engine &amp; Microsoft Office. No shortcuts. Released under the MIT License.</p>
+  <footer>
+    <div class="container status-row">
+      <span>PROJECT: BIM-AZIM</span>
+      <span>ENGINES: REVIT · NAVISWORKS · TEKLA · UNREAL · OFFICE</span>
+      <span>LICENSE: MIT</span>
+      <span>STATUS: ONLINE</span>
+    </div>
   </footer>
 
   <script src="script.js"></script>
