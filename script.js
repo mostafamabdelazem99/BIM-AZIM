@@ -16,19 +16,123 @@
   }
 })();
 
-// Tools section tabs
+// Tools section: fetch the real, complete catalog (generated straight from server/src/tools/
+// and unreal/server/src/index.js — see docs/ARCHITECTURE.md) and render every tab/panel/row from
+// it, with a live search box. Nothing here is a hand-written sample.
 (function () {
-  const tabs = document.querySelectorAll(".tab-btn");
-  const panels = document.querySelectorAll(".tool-panel");
-  tabs.forEach((tab) => {
-    tab.addEventListener("click", () => {
-      tabs.forEach((t) => t.classList.remove("active"));
-      panels.forEach((p) => p.classList.remove("active"));
-      tab.classList.add("active");
-      const target = document.getElementById(tab.dataset.panel);
-      if (target) target.classList.add("active");
+  const tabsEl = document.getElementById("tools-tabs");
+  const panelsEl = document.getElementById("tools-panels");
+  const searchInput = document.getElementById("tools-search");
+  const searchCount = document.getElementById("tools-search-count");
+  const totalCountEl = document.getElementById("tools-total-count");
+  if (!tabsEl || !panelsEl) return;
+
+  const ENGINE_LABELS = {
+    revit: "Revit",
+    navisworks: "Navisworks",
+    tekla: "Tekla Structures",
+    autocad: "AutoCAD",
+    sketchup: "SketchUp",
+    max: "3ds Max",
+    unreal: "Unreal Engine",
+    office: "Office",
+  };
+  const ENGINE_ORDER = ["revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal", "office"];
+
+  function render(catalog) {
+    if (totalCountEl) totalCountEl.textContent = catalog.length;
+
+    const byEngine = new Map();
+    for (const tool of catalog) {
+      if (!byEngine.has(tool.engine)) byEngine.set(tool.engine, []);
+      byEngine.get(tool.engine).push(tool);
+    }
+
+    const engines = ENGINE_ORDER.filter((e) => byEngine.has(e));
+    engines.forEach((engine, i) => {
+      const tools = byEngine.get(engine);
+      const panelId = `panel-${engine}`;
+
+      const tab = document.createElement("button");
+      tab.className = "tab-btn" + (i === 0 ? " active" : "");
+      tab.dataset.panel = panelId;
+      tab.textContent = `${ENGINE_LABELS[engine] || engine} (${tools.length})`;
+      tabsEl.appendChild(tab);
+
+      const panel = document.createElement("div");
+      panel.id = panelId;
+      panel.className = "tool-panel" + (i === 0 ? " active" : "");
+      const list = document.createElement("div");
+      list.className = "tool-list";
+
+      tools
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach((tool) => {
+          const row = document.createElement("div");
+          row.className = "tool-row";
+          row.dataset.search = (tool.name + " " + tool.description).toLowerCase();
+          const nameEl = document.createElement("span");
+          nameEl.className = "name";
+          nameEl.textContent = tool.name;
+          const descEl = document.createElement("span");
+          descEl.className = "desc";
+          descEl.textContent = tool.description;
+          row.appendChild(nameEl);
+          row.appendChild(descEl);
+          list.appendChild(row);
+        });
+
+      panel.appendChild(list);
+      panelsEl.appendChild(panel);
     });
-  });
+
+    const tabs = Array.from(tabsEl.querySelectorAll(".tab-btn"));
+    const panels = Array.from(panelsEl.querySelectorAll(".tool-panel"));
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((t) => t.classList.remove("active"));
+        panels.forEach((p) => p.classList.remove("active"));
+        tab.classList.add("active");
+        const target = document.getElementById(tab.dataset.panel);
+        if (target) target.classList.add("active");
+        updateSearchCount();
+      });
+    });
+
+    function updateSearchCount() {
+      if (!searchCount) return;
+      const activePanel = panelsEl.querySelector(".tool-panel.active");
+      if (!activePanel) return;
+      const rows = Array.from(activePanel.querySelectorAll(".tool-row"));
+      const visible = rows.filter((r) => !r.classList.contains("is-hidden")).length;
+      searchCount.textContent = searchInput && searchInput.value.trim()
+        ? `${visible} of ${rows.length} match`
+        : `${rows.length} tools`;
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", () => {
+        const term = searchInput.value.trim().toLowerCase();
+        panelsEl.querySelectorAll(".tool-row").forEach((row) => {
+          row.classList.toggle("is-hidden", term.length > 0 && !row.dataset.search.includes(term));
+        });
+        updateSearchCount();
+      });
+    }
+
+    updateSearchCount();
+  }
+
+  fetch("tools-catalog.json", { cache: "no-store" })
+    .then((res) => {
+      if (!res.ok) throw new Error("bad status " + res.status);
+      return res.json();
+    })
+    .then(render)
+    .catch(() => {
+      panelsEl.innerHTML = '<p class="tools-empty">Couldn’t load the tool catalog right now.</p>';
+    });
 })();
 
 // Stat-strip count-up (hero numbers with data-count)
@@ -206,4 +310,75 @@
 
   showScene(0);
   setPlaying(!reduceMotion);
+})();
+
+// License roster: fetch the published Google Sheet (CSV) behind the license-request Google
+// Form, filter to Status=Approved, and render a count + username list. Never shows email
+// addresses — only usernames, and only approved ones.
+(function () {
+  const countEl = document.getElementById("roster-count");
+  const listEl = document.getElementById("roster-list");
+  if (!countEl || !listEl) return;
+
+  // BIM-AZIM TODO: replace with the real published-CSV URL (Google Sheet > File > Share >
+  // Publish to web > CSV) once the license-request Google Form exists — see docs/LICENSING.md.
+  const LICENSE_CSV_URL = "REPLACE_WITH_PUBLISHED_CSV_URL";
+
+  function parseCsv(text) {
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else if (c === '"') {
+        inQuotes = true;
+      } else if (c === ",") {
+        row.push(field); field = "";
+      } else if (c === "\n") {
+        row.push(field); rows.push(row); row = []; field = "";
+      } else if (c !== "\r") {
+        field += c;
+      }
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  async function loadRoster() {
+    try {
+      const res = await fetch(LICENSE_CSV_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("bad status " + res.status);
+      const rows = parseCsv(await res.text()).filter((r) => r.length > 1 || r[0] !== "");
+      if (rows.length < 1) throw new Error("empty sheet");
+
+      const header = rows[0].map((h) => h.trim().toLowerCase());
+      const userIdx = header.indexOf("username");
+      const statusIdx = header.indexOf("status");
+      if (userIdx === -1) throw new Error("no Username column");
+
+      const approved = rows
+        .slice(1)
+        .filter((r) => statusIdx === -1 || (r[statusIdx] || "").trim().toLowerCase() === "approved")
+        .map((r) => (r[userIdx] || "").trim())
+        .filter(Boolean);
+
+      countEl.textContent = approved.length;
+      listEl.innerHTML = approved.length
+        ? approved.map((u) => `<span class="roster-pill"></span>`).join("")
+        : '<p class="roster-empty">No approved licenses yet — be the first to request one.</p>';
+      if (approved.length) {
+        // Set text via textContent per-pill to avoid any HTML injection from sheet contents.
+        Array.from(listEl.children).forEach((pill, i) => { pill.textContent = approved[i]; });
+      }
+    } catch (err) {
+      countEl.textContent = "—";
+      listEl.innerHTML = '<p class="roster-empty">Can’t load the roster right now.</p>';
+    }
+  }
+
+  loadRoster();
 })();
