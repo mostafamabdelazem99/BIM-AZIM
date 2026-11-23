@@ -7,8 +7,8 @@ using BimAzimPlugin.UI;
 namespace BimAzimPlugin.Commands
 {
     /// <summary>
-    /// External command for the "Activate BIM-AZIM" ribbon button.
-    /// Opens the activation modal dialog.
+    /// External command for the "Request License" ribbon button.
+    /// Opens the license request modal dialog.
     /// </summary>
     [Transaction(TransactionMode.Manual)]
     public class ActivateCommand : IExternalCommand
@@ -18,14 +18,7 @@ namespace BimAzimPlugin.Commands
             try
             {
                 var window = new ActivationWindow();
-                var result = window.ShowDialog();
-
-                if (result == true)
-                {
-                    // Activation succeeded — update ribbon to show all tools
-                    Application.SetActivationUiState(true);
-                }
-
+                window.ShowDialog();
                 return Result.Succeeded;
             }
             catch (System.Exception ex)

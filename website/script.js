@@ -207,3 +207,74 @@
   showScene(0);
   setPlaying(!reduceMotion);
 })();
+
+// License roster: fetch the published Google Sheet (CSV) behind the license-request Google
+// Form, filter to Status=Approved, and render a count + username list. Never shows email
+// addresses — only usernames, and only approved ones.
+(function () {
+  const countEl = document.getElementById("roster-count");
+  const listEl = document.getElementById("roster-list");
+  if (!countEl || !listEl) return;
+
+  // BIM-AZIM TODO: replace with the real published-CSV URL (Google Sheet > File > Share >
+  // Publish to web > CSV) once the license-request Google Form exists — see docs/LICENSING.md.
+  const LICENSE_CSV_URL = "REPLACE_WITH_PUBLISHED_CSV_URL";
+
+  function parseCsv(text) {
+    const rows = [];
+    let row = [], field = "", inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQuotes = false;
+        } else field += c;
+      } else if (c === '"') {
+        inQuotes = true;
+      } else if (c === ",") {
+        row.push(field); field = "";
+      } else if (c === "\n") {
+        row.push(field); rows.push(row); row = []; field = "";
+      } else if (c !== "\r") {
+        field += c;
+      }
+    }
+    if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }
+    return rows;
+  }
+
+  async function loadRoster() {
+    try {
+      const res = await fetch(LICENSE_CSV_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("bad status " + res.status);
+      const rows = parseCsv(await res.text()).filter((r) => r.length > 1 || r[0] !== "");
+      if (rows.length < 1) throw new Error("empty sheet");
+
+      const header = rows[0].map((h) => h.trim().toLowerCase());
+      const userIdx = header.indexOf("username");
+      const statusIdx = header.indexOf("status");
+      if (userIdx === -1) throw new Error("no Username column");
+
+      const approved = rows
+        .slice(1)
+        .filter((r) => statusIdx === -1 || (r[statusIdx] || "").trim().toLowerCase() === "approved")
+        .map((r) => (r[userIdx] || "").trim())
+        .filter(Boolean);
+
+      countEl.textContent = approved.length;
+      listEl.innerHTML = approved.length
+        ? approved.map((u) => `<span class="roster-pill"></span>`).join("")
+        : '<p class="roster-empty">No approved licenses yet — be the first to request one.</p>';
+      if (approved.length) {
+        // Set text via textContent per-pill to avoid any HTML injection from sheet contents.
+        Array.from(listEl.children).forEach((pill, i) => { pill.textContent = approved[i]; });
+      }
+    } catch (err) {
+      countEl.textContent = "—";
+      listEl.innerHTML = '<p class="roster-empty">Can’t load the roster right now.</p>';
+    }
+  }
+
+  loadRoster();
+})();

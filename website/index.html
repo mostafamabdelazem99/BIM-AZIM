@@ -25,6 +25,7 @@
         <a href="#tools">Tools</a>
         <a href="#architecture">Architecture</a>
         <a href="#tekla">Tekla Integration</a>
+        <a href="#license">License</a>
         <a href="#install">Install</a>
       </div>
       <div style="display:flex; align-items:center; gap:14px;">
@@ -472,6 +473,37 @@
       <div class="card">
         <h3>③ Same contract as the others</h3>
         <p><code>GET /health</code> and <code>POST /tools/:name</code> — identical shape to the Revit and Navisworks bridges, so the MCP server treats all three uniformly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="license" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Join The Roster</div>
+      <h2>Request Your License</h2>
+      <p>Submit your username and email below. The admin reviews every request personally and replies by email — approved users show up in the public roster underneath.</p>
+    </div>
+
+    <div class="license-grid">
+      <div class="license-form-card">
+        <!-- BIM-AZIM TODO: replace with the real Google Form embed URL
+             (…/viewform?embedded=true) once the form exists — see docs/LICENSING.md. -->
+        <iframe
+          src="https://docs.google.com/forms/d/e/REPLACE_WITH_FORM_ID/viewform?embedded=true"
+          width="100%" height="560" frameborder="0" marginheight="0" marginwidth="0">
+          Loading…
+        </iframe>
+      </div>
+
+      <div class="license-roster-card">
+        <div class="roster-count">
+          <div class="num" id="roster-count">—</div>
+          <div class="label">Licensed Users</div>
+        </div>
+        <div class="roster-list" id="roster-list">
+          <p class="roster-loading">Loading roster…</p>
+        </div>
+        <p class="roster-footnote">Only approved requests are listed, and only by username — never email addresses.</p>
       </div>
     </div>
   </section>

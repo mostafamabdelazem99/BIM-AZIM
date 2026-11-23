@@ -603,6 +603,41 @@ section { padding: 80px 0; }
 .install-step h4 { margin: 0 0 4px; font-size: 14.5px; }
 .install-step p { margin: 0; color: var(--text-dim); font-size: 13.5px; }
 
+/* ---------- License / roster ---------- */
+.license-grid {
+  display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px;
+  max-width: 1040px; margin: 0 auto; align-items: start;
+}
+@media (max-width: 860px) {
+  .license-grid { grid-template-columns: 1fr; }
+}
+.license-form-card, .license-roster-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.license-form-card iframe { display: block; border: none; background: #fff; }
+.license-roster-card { padding: 24px; text-align: center; }
+.roster-count .num {
+  font-family: "Archivo", sans-serif; font-weight: 800; font-size: 2.6rem;
+  color: var(--accent-bright); line-height: 1;
+}
+.roster-count .label {
+  font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint);
+  margin-top: 4px; margin-bottom: 20px;
+}
+.roster-list {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  max-height: 260px; overflow-y: auto; margin-bottom: 14px;
+}
+.roster-pill {
+  background: var(--accent-soft); color: var(--accent-bright); border: 1px solid transparent;
+  border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600;
+}
+.roster-loading, .roster-empty {
+  color: var(--text-faint); font-size: 13px; margin: 0;
+}
+.roster-footnote { font-size: 12px; color: var(--text-faint); margin: 0; }
+
 /* ---------- Barbell divider ---------- */
 .barbell-divider {
   display: flex; align-items: center; justify-content: center;
