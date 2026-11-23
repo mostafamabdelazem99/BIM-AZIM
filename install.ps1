@@ -82,6 +82,30 @@ function Get-NavisworksYears {
     return $years
 }
 
+function Get-AutoCadYears {
+    $years = @()
+    foreach ($year in 2021..2027) {
+        if (Test-Path "C:\Program Files\Autodesk\AutoCAD $year") { $years += $year }
+    }
+    return $years
+}
+
+function Get-SketchUpVersions {
+    $root = "C:\Program Files\SketchUp"
+    if (-not (Test-Path $root)) { return @() }
+    return Get-ChildItem $root -Directory -ErrorAction SilentlyContinue |
+        Where-Object { $_.Name -match '^SketchUp (\d{4})$' } |
+        ForEach-Object { $Matches[1] }
+}
+
+function Get-MaxYears {
+    $years = @()
+    foreach ($year in 2021..2027) {
+        if (Test-Path "C:\Program Files\Autodesk\3ds Max $year") { $years += $year }
+    }
+    return $years
+}
+
 function Get-TeklaStructuresBin {
     # Tekla Structures installs as C:\Program Files\Tekla Structures\<version>\nt\bin on 64-bit builds.
     $root = "C:\Program Files\Tekla Structures"
@@ -298,6 +322,105 @@ function Build-NavisworksPlugin {
     return $installed
 }
 
+function Build-AutoCadPlugin {
+    Write-Step "Checking for Autodesk AutoCAD"
+    $years = Get-AutoCadYears
+    if ($years.Count -eq 0) {
+        Write-Warn2 "No AutoCAD install detected (checked C:\Program Files\Autodesk\AutoCAD <year> for 2021-2027)"
+        return $false
+    }
+    Write-Ok "Found AutoCAD: $($years -join ', ')"
+
+    $dotnetExe = Get-DotnetPath
+    if (-not $dotnetExe) {
+        Write-Warn2 ".NET SDK not found - skipping the AutoCAD plugin build. Install the .NET 8 SDK (https://dotnet.microsoft.com/download) and re-run this installer."
+        return $false
+    }
+
+    # Only one band so far (AutoCAD 2025/2026, net8.0-windows) - see plugins/AutoCAD/README.md.
+    Write-Step "Building the AutoCAD plugin (2025/2026 band)"
+    $proj = Join-Path $AppDir "plugins\AutoCAD\BimAzimAutoCadPlugin\BimAzimAutoCadPlugin.csproj"
+    $buildOutput = & $dotnetExe build $proj -c Release 2>&1
+    $dllPath = Join-Path $AppDir "plugins\AutoCAD\BimAzimAutoCadPlugin\bin\Release\net8.0-windows\BimAzimAutoCadPlugin.dll"
+    if ($LASTEXITCODE -ne 0 -or -not (Test-Path $dllPath)) {
+        Write-Warn2 "AutoCAD plugin build did not produce $dllPath - see plugins/AutoCAD/README.md"
+        Write-Host "      Last lines of dotnet build output:" -ForegroundColor DarkGray
+        $buildOutput | Select-Object -Last 15 | ForEach-Object { Write-Host "      $_" -ForegroundColor DarkGray }
+        return $false
+    }
+
+    # Per-user ApplicationPlugins bundle - AutoCAD's equivalent of Revit's per-user .addin
+    # manifest: auto-loaded on startup, no admin rights needed.
+    $bundleRoot = Join-Path $env:APPDATA "Autodesk\ApplicationPlugins\BimAzim.bundle"
+    $bundleContents = Join-Path $bundleRoot "Contents"
+    New-Item -ItemType Directory -Force -Path $bundleContents | Out-Null
+    Copy-Item (Join-Path (Split-Path $dllPath -Parent) "*") $bundleContents -Force -Exclude "*.pdb"
+
+    $packageContents = @'
+<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage SchemaVersion="1.0" AppVersion="0.1.0" Name="BIM-AZIM" Description="AI automation for AutoCAD" AppNameSpace="BimAzim" ProductCode="{B1A10000-A2D4-4C16-9C62-2F4D6AB10001}" UpgradeCode="{B1A10000-A2D4-4C16-9C62-2F4D6AB10002}">
+  <CompanyDetails Name="BIM-AZIM" Url="https://mostafamabdelazem99.github.io/BIM-AZIM/" />
+  <Components Description="BIM-AZIM AutoCAD plugin">
+    <RuntimeRequirements OS="Win64" Platform="AutoCAD" SeriesMin="R24.0" SeriesMax="R26.0" />
+    <ComponentEntry AppName="BimAzim" ModuleName="./Contents/BimAzimAutoCadPlugin.dll" AppDescription="BIM-AZIM AI automation" LoadOnAutoCADStartup="true" />
+  </Components>
+</ApplicationPackage>
+'@
+    $packageContents | Out-File -Encoding utf8 -Force (Join-Path $bundleRoot "PackageContents.xml")
+
+    Write-Ok "AutoCAD plugin installed ($bundleRoot)"
+    return $true
+}
+
+function Deploy-SketchUpPlugin {
+    Write-Step "Checking for SketchUp"
+    $versions = Get-SketchUpVersions
+    if ($versions.Count -eq 0) {
+        Write-Warn2 "No SketchUp install detected (checked C:\Program Files\SketchUp\SketchUp <year>)"
+        return @()
+    }
+    Write-Ok "Found SketchUp: $($versions -join ', ')"
+
+    $installed = @()
+    foreach ($version in $versions) {
+        $versionDir = Join-Path $env:APPDATA "SketchUp\SketchUp $version"
+        if (-not (Test-Path $versionDir)) {
+            Write-Warn2 "SketchUp $version's per-user folder wasn't found at $versionDir yet - it's created the first time SketchUp $version actually runs. Run SketchUp $version once, then re-run this installer."
+            continue
+        }
+        $pluginsDir = Join-Path $versionDir "SketchUp\Plugins"
+        New-Item -ItemType Directory -Force -Path $pluginsDir | Out-Null
+        Copy-Item (Join-Path $AppDir "plugins\SketchUp\bimazim_sketchup.rb") $pluginsDir -Force
+        Copy-Item (Join-Path $AppDir "plugins\SketchUp\bimazim_sketchup") $pluginsDir -Recurse -Force
+        Write-Ok "SketchUp $version plugin installed ($pluginsDir)"
+        $installed += $version
+    }
+    return $installed
+}
+
+function Deploy-MaxPlugin {
+    Write-Step "Checking for 3ds Max"
+    $years = Get-MaxYears
+    if ($years.Count -eq 0) {
+        Write-Warn2 "No 3ds Max install detected (checked C:\Program Files\Autodesk\3ds Max <year>)"
+        return @()
+    }
+    Write-Ok "Found 3ds Max: $($years -join ', ')"
+
+    $installed = @()
+    foreach ($year in $years) {
+        # 3ds Max's per-user startup-scripts folder. The "ENU" (English) locale segment differs
+        # for non-English installs - see plugins/3dsMax/README.md if this doesn't match yours.
+        $startupDir = Join-Path $env:LOCALAPPDATA "Autodesk\3dsMax\$year - 64bit\ENU\scripts\startup"
+        New-Item -ItemType Directory -Force -Path $startupDir | Out-Null
+        Copy-Item (Join-Path $AppDir "plugins\3dsMax\startup_bimazim.py") $startupDir -Force
+        Copy-Item (Join-Path $AppDir "plugins\3dsMax\bimazim_max") $startupDir -Recurse -Force
+        Write-Ok "3ds Max $year plugin installed ($startupDir)"
+        $installed += $year
+    }
+    return $installed
+}
+
 function Configure-AiClients {
     Write-Step "Registering BIM-AZIM with every MCP-compatible AI client on this machine"
     # Ported from BIM-Bot's own multi-client config writer (ai client config, repair-on-restale,
@@ -317,7 +440,7 @@ function Configure-AiClients {
 
 Write-Host ""
 Write-Host "  BIM-AZIM installer" -ForegroundColor Magenta
-Write-Host "  AI automation for Revit, Navisworks Manage, Tekla Structures and Unreal Engine" -ForegroundColor DarkGray
+Write-Host "  AI automation for Revit, Navisworks, Tekla, Unreal, AutoCAD, SketchUp and 3ds Max" -ForegroundColor DarkGray
 Write-Host ""
 
 Ensure-Node
@@ -327,6 +450,9 @@ $unrealReady = Build-UnrealServer
 $revitYears = Build-RevitPlugin
 $navisYears = Build-NavisworksPlugin
 $teklaReady = Build-TeklaBridge
+$autocadReady = Build-AutoCadPlugin
+$sketchupVersions = Deploy-SketchUpPlugin
+$maxYears = Deploy-MaxPlugin
 Configure-AiClients
 
 Write-Host ""
@@ -338,6 +464,9 @@ Write-Host " Revit plugin:           $(if ($revitYears.Count -gt 0) { "installed
 Write-Host " Navisworks plugin:      $(if ($navisYears.Count -gt 0) { "installed for $($navisYears -join ', ')" } else { 'not installed (no Navisworks detected or build failed - see messages above)' })"
 Write-Host " Tekla bridge:           $(if ($teklaReady) { 'built - see plugins/Tekla/README.md to start it' } else { 'not built (see message above)' })"
 Write-Host " Unreal server:          $(if ($unrealReady) { 'dependencies installed - the C++ plugin itself is unverified, see plugins/Unreal/README.md' } else { 'not ready (see message above) - the BIM-AZIM-Unreal client entry will not work yet' })"
+Write-Host " AutoCAD plugin:         $(if ($autocadReady) { 'installed - see plugins/AutoCAD/README.md' } else { 'not installed (no AutoCAD detected or build failed - see messages above)' })"
+Write-Host " SketchUp plugin:        $(if ($sketchupVersions.Count -gt 0) { "installed for $($sketchupVersions -join ', ')" } else { 'not installed (no SketchUp detected - see messages above)' })"
+Write-Host " 3ds Max plugin:         $(if ($maxYears.Count -gt 0) { "installed for $($maxYears -join ', ')" } else { 'not installed (no 3ds Max detected - see messages above)' })"
 Write-Host " AI clients:             see 'Registering BIM-AZIM with every MCP-compatible AI client' above for exactly which ones got configured"
 Write-Host ""
 if ($revitYears.Count -gt 0) {
@@ -345,6 +474,15 @@ if ($revitYears.Count -gt 0) {
 }
 if ($navisYears.Count -gt 0) {
     Write-Host " Restart Navisworks Manage so it picks up the new add-in (Add-ins tab -> BIM-AZIM)." -ForegroundColor DarkGray
+}
+if ($autocadReady) {
+    Write-Host " Restart AutoCAD so it picks up the new bundle (type BIMAZIM on the command line, or look for the BIM-AZIM ribbon tab)." -ForegroundColor DarkGray
+}
+if ($sketchupVersions.Count -gt 0) {
+    Write-Host " Restart SketchUp so it loads the new extension (Extension Manager should list 'BIM-AZIM')." -ForegroundColor DarkGray
+}
+if ($maxYears.Count -gt 0) {
+    Write-Host " Restart 3ds Max so it runs the new startup script (MAXScript listener will print 'BIM-AZIM: 3ds Max plugin loaded')." -ForegroundColor DarkGray
 }
 Write-Host " Restart your AI client(s), then ask them to call 'bimazim_engine_status' to confirm the connection."
 Write-Host ""
