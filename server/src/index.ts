@@ -13,6 +13,7 @@ import { revitIntegrationTools } from "./tools/revit-integrations.js";
 import { revitDocumentationTools } from "./tools/revit-documentation.js";
 import { navisAiTools } from "./tools/navis-ai.js";
 import { navisDashboardTools } from "./tools/navis-dashboard.js";
+import { registerOfficeTools } from "./tools/office.js";
 
 const server = new McpServer({
   name: "bim-azim-server",
@@ -39,6 +40,7 @@ registerAll(navisClient, navisworksTools);
 registerAll(navisClient, navisAiTools);
 registerAll(navisClient, navisDashboardTools);
 registerAll(teklaClient, teklaTools);
+registerOfficeTools(server);
 
 server.tool(
   "bimazim_engine_status",

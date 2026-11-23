@@ -47,8 +47,9 @@ OpenCode, or (best-effort) DeepSeek Harness — `install.ps1` registers both BIM
 whichever of these it finds (see `server/scripts/configure-bimazim.cjs`).
 
 ### 2. BIM-AZIM MCP Server (`server/`)
-Node.js + TypeScript, built on `@modelcontextprotocol/sdk`. One process registers all 289 tools
-across Revit (`revit_*`), Navisworks (`navis_*`), and Tekla (`tekla_*`) — unlike BIM-Bot, which
+Node.js + TypeScript, built on `@modelcontextprotocol/sdk`. One process registers all 293 tools
+across Revit (`revit_*`), Navisworks (`navis_*`), Tekla (`tekla_*`), and Microsoft Office
+(`office_*`) — unlike BIM-Bot, which
 needs two separate client entries (one env-scoped for Navisworks) because its single server only
 exposes `navis_*` tools when told to. BIM-AZIM's server always registers everything, so one entry
 is enough. Routes Revit/Navisworks calls over the TCP bridge (`bridge/tcp-engine-client.ts`) and
@@ -77,6 +78,7 @@ operations, the C++ bridge for the rest).
 | Navisworks | 65 (across `navisworks.ts`, `navis-ai.ts`, `navis-dashboard.ts`) | Plugin builds clean (0 errors, NavisYear 2020/2024/2027 verified). 7 dashboard tools reach a plugin feature that's stubbed — see below |
 | Tekla | 14 | Bridge code written against the Open API from documentation alone — **unverified on real hardware**, every uncertain call flagged `// VERIFY:` |
 | Unreal | ~50 (separate server) | Node server verified (71/71 tests pass); the C++ editor plugin is **unverified** — no local Unreal Engine available |
+| Office | 4 (`office.ts`) | Not a bridge — generates/reads `.docx`/`.xlsx`/`.pptx` directly via `docx`/`exceljs`/`pptxgenjs`. No Office installation needed. Verified end-to-end (real files generated and inspected) |
 
 **Navisworks dashboard gap**: the 7 `navis_dashboard_*` tools call into a JSON config contract
 (`DashboardConfig`, `PageSpec`, `VisualSpec`, …) that doesn't exist anywhere in BIM-Bot's own
@@ -84,6 +86,18 @@ published source — not a version difference, a genuinely missing file upstream
 fabricate that contract and risk silently diverging from BIM-Bot's real behavior, the whole
 Dashboard feature is excluded from compilation; those 7 tools reach a plugin that cleanly replies
 "unknown command" instead of crashing.
+
+## Known dependency advisories (deliberately not force-upgraded)
+
+Both of these have non-breaking fixes available *only* via a major-version bump of a direct
+dependency, which would itself be a breaking change — so both are documented instead of patched:
+
+- **`zod@<4.6.6`** (high, memory exhaustion on oversized constrained collections) — fixing it means
+  zod v3→v4 across all 293 tool schemas. Deferred.
+- **`image-size@<2.0.3`** (high, DoS via malformed JXL/HEIF/ICNS parsing), pulled in transitively by
+  `pptxgenjs` — even `pptxgenjs`'s own latest release still pins `image-size@^1.2.1`, so there's no
+  fix available without `pptxgenjs` itself updating. `office_create_powerpoint` never parses image
+  files today, so this code path isn't reachable through BIM-AZIM yet.
 
 ## Roadmap ideas
 

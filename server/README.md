@@ -1,8 +1,9 @@
 # BIM-AZIM MCP Server
 
-TypeScript MCP server exposing 289 Revit, Navisworks Manage, and Tekla Structures tools to any
-MCP-compatible AI client. (Unreal Engine is a separate server — see `../unreal/README.md`.) See
-[`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for the full picture.
+TypeScript MCP server exposing 293 Revit, Navisworks Manage, Tekla Structures, and Microsoft
+Office (Word/Excel/PowerPoint) tools to any MCP-compatible AI client. (Unreal Engine is a separate
+server — see `../unreal/README.md`.) See [`../docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md) for
+the full picture.
 
 ## Setup
 
@@ -55,3 +56,12 @@ Revit and Navisworks use a TCP JSON-RPC bridge (`bridge/tcp-engine-client.ts`), 
 
 Use `bimazim_engine_status` from any AI client to sanity-check which bridges are currently
 reachable before debugging a specific tool call.
+
+## Microsoft Office integration
+
+`src/tools/office.ts` adds four tools — `office_create_word_report`, `office_create_excel_workbook`,
+`office_read_excel_workbook`, `office_create_powerpoint` — that generate or read real `.docx`/
+`.xlsx`/`.pptx` files directly (via `docx`, `exceljs`, `pptxgenjs`). These don't go through an
+engine bridge and don't need Word/Excel/PowerPoint installed: any AI client connected to BIM-AZIM
+can turn a Revit export, a Navisworks clash list, or a Tekla part schedule straight into a branded
+Office document.

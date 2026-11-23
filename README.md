@@ -2,9 +2,10 @@
 
 **Live site: [mostafamabdelazem99.github.io/BIM-AZIM](https://mostafamabdelazem99.github.io/BIM-AZIM/)**
 
-AI-powered automation for **Autodesk Revit**, **Navisworks Manage**, **Tekla Structures**, and
-**Unreal Engine** — 289 MCP tools across four engines, driven from Claude, ChatGPT, Gemini,
-Cursor, or any MCP-compatible client.
+AI-powered automation for **Autodesk Revit**, **Navisworks Manage**, **Tekla Structures**,
+**Unreal Engine**, and **Microsoft Office** (Word/Excel/PowerPoint) — 293 MCP tools across four
+BIM/visualization engines plus direct Office document generation, driven from Claude, ChatGPT,
+Gemini, Cursor, or any MCP-compatible client.
 
 Revit and Navisworks support is ported and rebranded from the open-source
 [BIM-Bot](https://github.com/HassanElmathary/BIM-Bot) (MIT licensed) — real, building add-ins, not
@@ -46,7 +47,7 @@ exactly what it does and doesn't touch.
 | Path | What it is |
 |---|---|
 | [`website/`](website/index.html) | Public landing page — animated overview + interactive chat simulation |
-| [`server/`](server/README.md) | TypeScript MCP server — 289 tool definitions across Revit/Navisworks/Tekla |
+| [`server/`](server/README.md) | TypeScript MCP server — 293 tool definitions across Revit/Navisworks/Tekla/Office |
 | [`unreal/server/`](unreal/README.md) | Separate standalone MCP server for the Unreal Engine bridge |
 | [`plugins/Revit/`](plugins/Revit/README.md) | Real Revit add-in (ported from BIM-Bot), builds clean 2020-2027 |
 | [`plugins/Navisworks/`](plugins/Navisworks/README.md) | Real Navisworks Manage add-in (ported from BIM-Bot), builds clean 2020-2027 |
@@ -59,8 +60,11 @@ exactly what it does and doesn't touch.
 ## Status
 
 Real, verified, building code — not a scaffold. Revit (2024/2026 bands) and Navisworks
-(2020/2024/2027) plugins build with 0 errors; the server starts clean with all 289 tools
-registered under unique names. Two gaps are flagged honestly rather than hidden:
+(2020/2024/2027) plugins build with 0 errors; the server starts clean with all 293 tools
+registered under unique names. The four `office_*` tools generate real `.docx`/`.xlsx`/`.pptx`
+files directly (no Microsoft Office installation required) and were verified end-to-end against
+the actual `docx`/`exceljs`/`pptxgenjs` libraries. Two gaps are flagged honestly rather than
+hidden:
 
 - **Tekla bridge and Unreal C++ plugin are unverified** — their proprietary APIs only exist inside
   real installs that weren't available while building this, so the code is correct to the best of
@@ -69,5 +73,11 @@ registered under unique names. Two gaps are flagged honestly rather than hidden:
 - **Navisworks' Power BI dashboard feature is stubbed** — the JSON config contract it needs isn't
   present anywhere in BIM-Bot's own published source, so those 7 tools reach a plugin that cleanly
   replies "unknown command" rather than crashing.
+- **`pptxgenjs`'s transitive `image-size` dependency carries a high-severity DoS advisory**
+  ([GHSA-5p2g-fcmc-qvqq](https://github.com/advisories/GHSA-5p2g-fcmc-qvqq)) with no non-breaking
+  fix — even `pptxgenjs`'s own latest release still pins `image-size@^1.2.1`. Not force-upgraded
+  (same policy as the `zod` advisory tracked in `docs/ARCHITECTURE.md`): the current
+  `office_create_powerpoint` tool never parses image files, so this code path isn't exercised
+  today.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full picture.
