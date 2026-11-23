@@ -13,6 +13,10 @@ import { revitIntegrationTools } from "./tools/revit-integrations.js";
 import { revitDocumentationTools } from "./tools/revit-documentation.js";
 import { navisAiTools } from "./tools/navis-ai.js";
 import { navisDashboardTools } from "./tools/navis-dashboard.js";
+import { registerOfficeTools } from "./tools/office.js";
+import { autocadTools } from "./tools/autocad.js";
+import { sketchupTools } from "./tools/sketchup.js";
+import { maxTools } from "./tools/max.js";
 
 const server = new McpServer({
   name: "bim-azim-server",
@@ -24,6 +28,9 @@ const server = new McpServer({
 const revitClient = new TcpEngineClient(ENGINES.revit, "service-revit.json", 8082);
 const navisClient = new TcpEngineClient(ENGINES.navisworks, "service-navis.json", 8093);
 const teklaClient = new EngineClient(ENGINES.tekla);
+const autocadClient = new TcpEngineClient(ENGINES.autocad, "service-autocad.json", 8094);
+const sketchupClient = new TcpEngineClient(ENGINES.sketchup, "service-sketchup.json", 8095);
+const maxClient = new TcpEngineClient(ENGINES.max, "service-max.json", 8096);
 
 function registerAll(client: ToolBridge, tools: readonly ToolDefinition[]) {
   for (const tool of tools) {
@@ -39,22 +46,29 @@ registerAll(navisClient, navisworksTools);
 registerAll(navisClient, navisAiTools);
 registerAll(navisClient, navisDashboardTools);
 registerAll(teklaClient, teklaTools);
+registerAll(autocadClient, autocadTools);
+registerAll(sketchupClient, sketchupTools);
+registerAll(maxClient, maxTools);
+registerOfficeTools(server);
 
 server.tool(
   "bimazim_engine_status",
-  "Check which of the three BIM-AZIM engine bridges (Revit, Navisworks Manage, Tekla Structures) are currently reachable.",
+  "Check which of the BIM-AZIM engine bridges (Revit, Navisworks Manage, Tekla Structures, AutoCAD, SketchUp, 3ds Max) are currently reachable.",
   {},
   async () => {
-    const [revit, navisworks, tekla] = await Promise.all([
+    const [revit, navisworks, tekla, autocad, sketchup, max] = await Promise.all([
       revitClient.health(),
       navisClient.health(),
       teklaClient.health(),
+      autocadClient.health(),
+      sketchupClient.health(),
+      maxClient.health(),
     ]);
     return {
       content: [
         {
           type: "text" as const,
-          text: JSON.stringify({ revit, navisworks, tekla }, null, 2),
+          text: JSON.stringify({ revit, navisworks, tekla, autocad, sketchup, max }, null, 2),
         },
       ],
     };

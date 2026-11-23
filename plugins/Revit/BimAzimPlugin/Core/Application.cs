@@ -261,8 +261,18 @@ namespace BimAzimPlugin.Core
                     Image = RibbonIcons.CheckUpdates(16)
                 };
 
+                var licenseData = new PushButtonData("MCPRequestLicense", "Request\nLicense", asm,
+                    "BimAzimPlugin.Commands.ActivateCommand")
+                {
+                    ToolTip = "Submit your username and email to request a BIM-AZIM license — " +
+                              "the admin is notified automatically and replies by email",
+                    LargeImage = RibbonIcons.ActivateKey(32),
+                    Image = RibbonIcons.ActivateKey(16)
+                };
+
                 corePanel.AddItem(settingsData);
                 _updateCheckButton = corePanel.AddItem(updateData) as PushButton;
+                corePanel.AddItem(licenseData);
 
                 // Initialize the external event manager
                 _eventManager = new ExternalEventManager();
@@ -338,23 +348,6 @@ namespace BimAzimPlugin.Core
         // ========================================
         // Dynamic button state updates
         // ========================================
-
-        /// <summary>
-        /// Called after a successful activation so the ribbon reflects the new
-        /// licensed state. Never throws — a UI refresh must not fail activation.
-        /// </summary>
-        public static void SetActivationUiState(bool isActivated)
-        {
-            try
-            {
-                Logger.Log($"Activation state updated: activated={isActivated}");
-                UpdateToggleButtonState();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Failed to update activation UI state", ex);
-            }
-        }
 
         /// <summary>Update the Start BIM-AZIM button icon/text based on service state.</summary>
         public static void UpdateToggleButtonState()

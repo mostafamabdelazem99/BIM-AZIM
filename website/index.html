@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BIM-AZIM — AI-Powered Revit, Navisworks &amp; Tekla Structures Automation</title>
-  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that brings AI automation to Autodesk Revit, Navisworks Manage, and — new — Tekla Structures (Trimble)." />
+  <title>BIM-AZIM — AI Automation Console for Revit, AutoCAD, SketchUp, 3ds Max &amp; More</title>
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, ReCap, and Microsoft Office from one engineering-grade automation layer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -25,31 +25,32 @@
         <a href="#tools">Tools</a>
         <a href="#architecture">Architecture</a>
         <a href="#tekla">Tekla Integration</a>
+        <a href="#license">License</a>
         <a href="#install">Install</a>
       </div>
       <div style="display:flex; align-items:center; gap:14px;">
         <button id="theme-toggle" aria-label="Toggle theme" style="background:none;border:1px solid var(--border);border-radius:8px;width:34px;height:34px;cursor:pointer;color:var(--text);">◐</button>
-        <a class="nav-cta" href="#install">Get Started</a>
+        <a class="nav-cta" href="#install">Launch Console</a>
       </div>
     </div>
   </nav>
 
   <header id="top" class="hero container">
-    <div class="badge"><span class="dot"></span> Open Source &amp; Free</div>
-    <h1>AI-Powered <span class="grad">Revit, Navisworks<br/>&amp; Tekla Structures</span></h1>
+    <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
+    <h1>One Server. <span class="grad">Seven Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
-      One MCP server, three parallel BIM engines. BIM-AZIM drives Autodesk Revit and Navisworks
-      Manage like the tools you already know — and adds genuine, first-class
-      <strong>Tekla Structures (Trimble)</strong> automation alongside them.
+      A single MCP server drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp,
+      3ds Max, and Unreal Engine — plus ReCap point-cloud data and direct Microsoft Office output —
+      from one conversation, with the same precision an engineering drawing demands.
     </p>
     <div class="hero-ctas">
-      <a class="btn-primary" href="#install">Get Started</a>
+      <a class="btn-primary" href="#install">Launch Console</a>
       <a class="btn-secondary" href="#tekla">See the Tekla Integration</a>
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num" data-count="289">0</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num" data-count="4">0</div><div class="label">BIM &amp; Visualization Engines</div></div>
+      <div class="stat"><div class="num" data-count="345">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="7">0</div><div class="label">BIM &amp; CAD Engines</div></div>
       <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
@@ -79,12 +80,43 @@
         <p class="ver">Real-time visualization bridge</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">A</div>
+        <h3>AutoCAD</h3>
+        <p class="ver">In-process add-in · 2026 · builds clean</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">S</div>
+        <h3>SketchUp</h3>
+        <p class="ver">Ruby extension · Trimble</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">M</div>
+        <h3>3ds Max</h3>
+        <p class="ver">Python (pymxs) startup script</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
 
+  <div class="container">
+    <div class="dimension-divider" aria-hidden="true">
+      <svg viewBox="0 0 400 24" xmlns="http://www.w3.org/2000/svg">
+        <line class="dim-tick" x1="4" y1="4" x2="4" y2="20" stroke-width="1.5" />
+        <line class="dim-line" x1="4" y1="12" x2="396" y2="12" stroke-width="1.5" />
+        <line class="dim-tick" x1="396" y1="4" x2="396" y2="20" stroke-width="1.5" />
+        <path class="dim-arrow" d="M4 12 L13 8 L13 16 Z" />
+        <path class="dim-arrow" d="M396 12 L387 8 L387 16 Z" />
+        <text class="dim-label" x="200" y="9" text-anchor="middle">SCALE N.T.S.</text>
+      </svg>
+    </div>
+  </div>
+
   <section id="showcase" class="container">
     <div class="section-head">
-      <div class="eyebrow">60-Second Overview</div>
+      <div class="eyebrow">System Overview</div>
       <h2>What makes BIM-AZIM different</h2>
       <p>An animated walkthrough of the architecture and engineering decisions — press play, or step through at your own pace.</p>
     </div>
@@ -107,23 +139,24 @@
             </svg>
           </div>
           <div class="scene-copy">
-            <h3>One MCP server, four engines</h3>
-            <p>Revit, Navisworks Manage, Tekla Structures and Unreal Engine — driven from a single conversation, instead of four disconnected tools.</p>
+            <h3>One MCP server, seven engines</h3>
+            <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, and 3ds Max — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all seven.)</p>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
           <div class="scene-visual count-visual">
-            <div class="big-count" data-target="289">0</div>
+            <div class="big-count" data-target="345">0</div>
             <div class="count-chips">
               <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
               <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
               <span class="tag">QA/QC</span><span class="tag">MEP</span><span class="tag">Dashboards</span>
+              <span class="tag">Office Docs</span><span class="tag">Point Clouds</span>
             </div>
           </div>
           <div class="scene-copy">
-            <h3>289 real MCP tools</h3>
-            <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements, verified against ported, building source.</p>
+            <h3>345 real MCP tools</h3>
+            <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements (or, for Word/Excel/PowerPoint, a real document generator), verified against building source.</p>
           </div>
         </div>
 
@@ -200,7 +233,7 @@
 
   <section id="simulation" class="container">
     <div class="section-head">
-      <div class="eyebrow">See It Work</div>
+      <div class="eyebrow">Live Session</div>
       <h2>A real conversation, not a mockup</h2>
       <p>These are BIM-AZIM's actual tool names and argument shapes — the same JSON that goes over the wire. Pick an engine.</p>
     </div>
@@ -297,15 +330,21 @@
   <section id="features" class="container">
     <div class="section-head">
       <div class="eyebrow">Features</div>
-      <h2>Everything you need to automate three BIM engines</h2>
-      <p>A toolkit that bridges the gap between AI and BIM — now including structural steel/precast workflows in Tekla.</p>
+      <h2>Everything you need to train seven engines</h2>
+      <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, real-time visualization in Unreal, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
       <div class="card feature-new">
-        <div class="icon">🧩</div>
+        <div class="icon">📐</div>
         <h3>Tekla Structures Bridge <span class="pill new">NEW</span></h3>
         <p>Connects to a running Tekla Structures session via the Tekla Open API — read/select/create/modify parts, run numbering, and export IFC, driven entirely from chat.</p>
         <div class="tag-row"><span class="tag">Beams &amp; Columns</span><span class="tag">Contour Plates</span><span class="tag">Numbering</span><span class="tag">IFC Export</span></div>
+      </div>
+      <div class="card feature-new">
+        <div class="icon">📄</div>
+        <h3>Microsoft Office Output <span class="pill new">NEW</span></h3>
+        <p>Turn a Revit export, a Navisworks clash list, or a Tekla part schedule straight into a real Word report, Excel workbook, or PowerPoint deck — no Office install required.</p>
+        <div class="tag-row"><span class="tag">Word</span><span class="tag">Excel</span><span class="tag">PowerPoint</span></div>
       </div>
       <div class="card">
         <div class="icon">🧠</div>
@@ -314,16 +353,16 @@
         <div class="tag-row"><span class="tag">MCP Protocol</span><span class="tag">Context-Aware</span></div>
       </div>
       <div class="card feature-new">
-        <div class="icon">🧮</div>
+        <div class="icon">🧱</div>
         <h3>Cross-Engine Interference Check <span class="pill new">NEW</span></h3>
         <p>A lightweight bounding-box clash pass inside the Tekla bridge itself — a quick sanity check on a structural model without needing a separate Navisworks seat.</p>
         <div class="tag-row"><span class="tag">No Navisworks Required</span><span class="tag">Fast</span></div>
       </div>
       <div class="card">
-        <div class="icon">🔗</div>
-        <h3>Three Parallel Engines</h3>
-        <p>Revit and Navisworks Manage run in-process, the same proven way established BIM-AI tools work. Tekla connects out-of-process — see why in the architecture docs.</p>
-        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span></div>
+        <div class="icon">🧭</div>
+        <h3>Four Parallel Engines</h3>
+        <p>Revit and Navisworks Manage run in-process, the same proven way established BIM-AI tools work. Tekla and Unreal connect out-of-process — see why in the architecture docs.</p>
+        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">Unreal</span></div>
       </div>
       <div class="card">
         <div class="icon">🛠️</div>
@@ -342,15 +381,18 @@
 
   <section id="tools" class="container">
     <div class="section-head">
-      <div class="eyebrow">Tools</div>
+      <div class="eyebrow">Tool Catalog</div>
       <h2>MCP tools by engine</h2>
-      <p>This is the current scaffold's real tool catalog — small today, built to grow the same way larger BIM-AI toolkits did.</p>
+      <p>A sample of the real tool catalog — 345 tools total across Revit, Navisworks, Tekla, AutoCAD, SketchUp, 3ds Max, and Office. Full list in <code>server/src/tools/</code>.</p>
     </div>
 
     <div class="tools-tabs">
       <button class="tab-btn active" data-panel="panel-tekla">Tekla Structures (14)</button>
-      <button class="tab-btn" data-panel="panel-revit">Revit (3)</button>
-      <button class="tab-btn" data-panel="panel-navis">Navisworks (3)</button>
+      <button class="tab-btn" data-panel="panel-revit">Revit (211)</button>
+      <button class="tab-btn" data-panel="panel-navis">Navisworks (65)</button>
+      <button class="tab-btn" data-panel="panel-autocad">AutoCAD (20)</button>
+      <button class="tab-btn" data-panel="panel-sketchup">SketchUp (15)</button>
+      <button class="tab-btn" data-panel="panel-max">3ds Max (18)</button>
     </div>
 
     <div id="panel-tekla" class="tool-panel active">
@@ -387,13 +429,38 @@
         <div class="tool-row"><span class="name">navis_run_clash_test</span><span class="desc">run a named clash test</span></div>
       </div>
     </div>
+
+    <div id="panel-autocad" class="tool-panel">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">autocad_create_line</span><span class="desc">line in model space</span></div>
+        <div class="tool-row"><span class="name">autocad_get_layers</span><span class="desc">list layers + state</span></div>
+        <div class="tool-row"><span class="name">autocad_send_command</span><span class="desc">raw command-line escape hatch</span></div>
+        <div class="tool-row"><span class="name">recap_list_point_clouds</span><span class="desc">attached ReCap scans</span></div>
+      </div>
+    </div>
+
+    <div id="panel-sketchup" class="tool-panel">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">sketchup_create_face</span><span class="desc">planar face from points</span></div>
+        <div class="tool-row"><span class="name">sketchup_create_group</span><span class="desc">group entities by id</span></div>
+        <div class="tool-row"><span class="name">sketchup_get_layers</span><span class="desc">tags + visibility</span></div>
+      </div>
+    </div>
+
+    <div id="panel-max" class="tool-panel">
+      <div class="tool-list">
+        <div class="tool-row"><span class="name">max_create_box</span><span class="desc">parametric Box primitive</span></div>
+        <div class="tool-row"><span class="name">max_assign_material</span><span class="desc">assign scene material</span></div>
+        <div class="tool-row"><span class="name">max_render_to_file</span><span class="desc">render active view to image</span></div>
+      </div>
+    </div>
   </section>
 
   <section id="architecture" class="container">
     <div class="section-head">
-      <div class="eyebrow">Architecture</div>
+      <div class="eyebrow">System Architecture</div>
       <h2>How it works</h2>
-      <p>A three-layer design connecting AI to three different BIM APIs — each wired the way its own API actually works.</p>
+      <p>A layered design connecting AI to seven different BIM/CAD APIs across three languages (.NET, Ruby, Python), plus direct Office output — each wired the way its own API actually works.</p>
     </div>
 
     <div class="arch-flow">
@@ -404,21 +471,37 @@
       <div class="arch-arrow">↓ MCP protocol (stdio / JSON-RPC)</div>
       <div class="arch-node">
         <strong>BIM-AZIM MCP Server</strong>
-        <span>Node.js + TypeScript · tool registry · routes to the right engine bridge</span>
+        <span>Node.js + TypeScript · tool registry · routes to the right engine bridge (plus Office tools, generated in-process)</span>
       </div>
-      <div class="arch-arrow">↓ HTTP/JSON, one port per engine</div>
+      <div class="arch-arrow">↓ TCP/HTTP, one port per engine</div>
       <div class="arch-branch">
         <div class="arch-node">
           <strong>Revit Add-in</strong>
-          <span>In-process · :8080</span>
+          <span>In-process · :8082</span>
         </div>
         <div class="arch-node">
           <strong>Navisworks Add-in</strong>
-          <span>In-process · :8091</span>
+          <span>In-process · :8093</span>
         </div>
         <div class="arch-node tekla">
           <strong>Tekla Bridge Service</strong>
           <span>Out-of-process · :8092</span>
+        </div>
+        <div class="arch-node tekla">
+          <strong>Unreal MCP Server</strong>
+          <span>Separate process · Remote Control :30010</span>
+        </div>
+        <div class="arch-node">
+          <strong>AutoCAD Add-in</strong>
+          <span>In-process (.NET) · :8094</span>
+        </div>
+        <div class="arch-node">
+          <strong>SketchUp Extension</strong>
+          <span>In-process (Ruby) · :8095</span>
+        </div>
+        <div class="arch-node">
+          <strong>3ds Max Script</strong>
+          <span>In-process (Python) · :8096</span>
         </div>
       </div>
     </div>
@@ -453,11 +536,42 @@
     </div>
   </section>
 
+  <section id="license" class="container">
+    <div class="section-head">
+      <div class="eyebrow">Access Registry</div>
+      <h2>Request Your License</h2>
+      <p>Submit your username and email below. The admin reviews every request personally and replies by email — approved users show up in the public roster underneath.</p>
+    </div>
+
+    <div class="license-grid">
+      <div class="license-form-card">
+        <!-- BIM-AZIM TODO: replace with the real Google Form embed URL
+             (…/viewform?embedded=true) once the form exists — see docs/LICENSING.md. -->
+        <iframe
+          src="https://docs.google.com/forms/d/e/REPLACE_WITH_FORM_ID/viewform?embedded=true"
+          width="100%" height="560" frameborder="0" marginheight="0" marginwidth="0">
+          Loading…
+        </iframe>
+      </div>
+
+      <div class="license-roster-card">
+        <div class="roster-count">
+          <div class="num" id="roster-count">—</div>
+          <div class="label">Licensed Users</div>
+        </div>
+        <div class="roster-list" id="roster-list">
+          <p class="roster-loading">Loading roster…</p>
+        </div>
+        <p class="roster-footnote">Only approved requests are listed, and only by username — never email addresses.</p>
+      </div>
+    </div>
+  </section>
+
   <section id="install" class="container">
     <div class="section-head">
-      <div class="eyebrow">Installation</div>
+      <div class="eyebrow">Deployment</div>
       <h2>Get BIM-AZIM running</h2>
-      <p>One installer sets up the MCP server, builds the Tekla bridge if Tekla Structures is on your PC, and registers itself with your AI client.</p>
+      <p>One installer sets up the MCP server, builds the Tekla bridge if Tekla Structures is on your PC, and registers itself with your AI client. Office tools work immediately — no Word/Excel/PowerPoint install required.</p>
     </div>
 
     <div class="install-card">
@@ -519,8 +633,26 @@ dotnet build
     </div>
   </section>
 
-  <footer class="container">
-    <p>BIM-AZIM — open source bridge between AI and Revit, Navisworks Manage &amp; Tekla Structures. Released under the MIT License.</p>
+  <div class="container">
+    <div class="dimension-divider" aria-hidden="true">
+      <svg viewBox="0 0 400 24" xmlns="http://www.w3.org/2000/svg">
+        <line class="dim-tick" x1="4" y1="4" x2="4" y2="20" stroke-width="1.5" />
+        <line class="dim-line" x1="4" y1="12" x2="396" y2="12" stroke-width="1.5" />
+        <line class="dim-tick" x1="396" y1="4" x2="396" y2="20" stroke-width="1.5" />
+        <path class="dim-arrow" d="M4 12 L13 8 L13 16 Z" />
+        <path class="dim-arrow" d="M396 12 L387 8 L387 16 Z" />
+        <text class="dim-label" x="200" y="9" text-anchor="middle">END OF DRAWING</text>
+      </svg>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container status-row">
+      <span>PROJECT: BIM-AZIM</span>
+      <span>ENGINES: REVIT · NAVISWORKS · TEKLA · AUTOCAD · SKETCHUP · 3DS MAX · UNREAL · RECAP · OFFICE</span>
+      <span>LICENSE: MIT</span>
+      <span>STATUS: ONLINE</span>
+    </div>
   </footer>
 
   <script src="script.js"></script>

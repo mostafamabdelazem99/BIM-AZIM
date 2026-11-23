@@ -1,0 +1,40 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    BIM-AZIM AutoCAD plugin — real in-process .NET add-in, same shape as the Revit/Navisworks
+    plugins: a loopback TCP socket speaking the same length-prefixed JSON-RPC 2.0 wire protocol
+    (Content-Length: N\n{json}), so server/src/bridge/tcp-engine-client.ts works unchanged.
+
+    Only one AutoCAD "band" is covered so far (2025/2026, net8.0-windows) — unlike the Revit
+    plugin's full 2020-2027 range, which took many iterations of real version-specific compat
+    work. Extending this to older AutoCAD years (net48, different ObjectARX-era APIs) is real
+    future work, not done here. See docs/ARCHITECTURE.md.
+
+    AutoCAD.NET from NuGet provides compile-only references to the AutoCAD managed API, so this
+    builds without AutoCAD installed — the same trick Nice3point.Revit.Api and
+    Speckle.Navisworks.API play for the other two plugins. Version 25.1.x = AutoCAD 2026.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RootNamespace>BimAzimAutoCadPlugin</RootNamespace>
+    <AssemblyName>BimAzimAutoCadPlugin</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Version>0.1.0</Version>
+    <Authors>BIM-AZIM</Authors>
+    <Description>BIM-AZIM plugin for Autodesk AutoCAD — AI-powered drawing automation, plus ReCap point-cloud query tools</Description>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Compile-only AutoCAD managed API (AcMgd/AcCoreMgd/AcDbMgd) — AutoCAD provides the real
+         assemblies at load time, so ExcludeAssets=runtime keeps them out of the output. -->
+    <!-- Pinned, not floating: 25.1.1 depends on net10.0 and would break this net8.0-windows
+         build; 25.1.0 is the AutoCAD 2026 release that targets net8.0. -->
+    <PackageReference Include="AutoCAD.NET" Version="25.1.0" ExcludeAssets="runtime" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+</Project>

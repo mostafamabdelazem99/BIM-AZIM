@@ -1,4 +1,4 @@
-export type EngineId = "revit" | "navisworks" | "tekla";
+export type EngineId = "revit" | "navisworks" | "tekla" | "autocad" | "sketchup" | "max";
 
 export interface EngineConfig {
   id: EngineId;
@@ -35,6 +35,24 @@ export const ENGINES: Record<EngineId, EngineConfig> = {
     label: "Tekla Structures",
     baseUrl: `http://127.0.0.1:${portFromEnv("BIMAZIM_TEKLA_PORT", 8092)}`,
     inProcess: false,
+  },
+  autocad: {
+    id: "autocad",
+    label: "Autodesk AutoCAD",
+    baseUrl: `tcp://127.0.0.1:${portFromEnv("BIMAZIM_AUTOCAD_PORT", 8094)}`,
+    inProcess: true,
+  },
+  sketchup: {
+    id: "sketchup",
+    label: "Trimble SketchUp",
+    baseUrl: `tcp://127.0.0.1:${portFromEnv("BIMAZIM_SKETCHUP_PORT", 8095)}`,
+    inProcess: true,
+  },
+  max: {
+    id: "max",
+    label: "Autodesk 3ds Max",
+    baseUrl: `tcp://127.0.0.1:${portFromEnv("BIMAZIM_MAX_PORT", 8096)}`,
+    inProcess: true,
   },
 };
 

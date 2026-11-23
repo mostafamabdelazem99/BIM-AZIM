@@ -14,6 +14,10 @@ plugins/Unreal/**/Intermediate/
 plugins/Unreal/**/Saved/
 plugins/Unreal/**/DerivedDataCache/
 
+# Python bytecode cache (plugins/3dsMax/bimazim_max is a real Python package)
+__pycache__/
+*.pyc
+
 # OS
 Thumbs.db
 .DS_Store
