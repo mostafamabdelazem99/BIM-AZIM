@@ -29,7 +29,6 @@
         <a href="#tools">Tools</a>
         <a href="#architecture">Architecture</a>
         <a href="#tekla">Tekla Integration</a>
-        <a href="#arvr">AR/VR</a>
         <a href="#license">License</a>
         <a href="#install">Install</a>
       </div>
@@ -65,7 +64,7 @@
         interaction-prompt="none" shadow-intensity="1" exposure="0.9"
         environment-image="neutral"
       ></model-viewer>
-      <p class="hero-3d-caption">Live 3D preview — drag to orbit. Same WebXR viewer used for AR/VR below.</p>
+      <p class="hero-3d-caption">Live 3D preview — drag to orbit.</p>
     </div>
 
     <div class="stat-strip">
@@ -454,7 +453,7 @@
     <div class="section-head">
       <div class="eyebrow">Features</div>
       <h2>Everything you need to train eighteen engines</h2>
-      <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, AR/VR preview, and Office documents on demand.</p>
+      <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, a live 3D model preview, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
       <div class="card feature-new">
@@ -501,9 +500,9 @@
       </div>
       <div class="card feature-new">
         <div class="icon">🥽</div>
-        <h3>AR / VR Preview <span class="pill new">NEW</span></h3>
-        <p>A real WebXR viewer right on this website — orbit a model, view it in AR on a phone, or step into VR with a headset. Unreal has native VR; 3ds Max exports real glTF for it.</p>
-        <div class="tag-row"><span class="tag">WebXR</span><span class="tag">model-viewer</span><span class="tag">Three.js</span></div>
+        <h3>3D Model Preview <span class="pill new">NEW</span></h3>
+        <p>A live 3D viewer right in this website's hero — orbit a sample model with no app install. Beyond the browser, Unreal Engine has real native VR (<code>unreal_play_in_vr</code>), and 3ds Max exports real glTF (<code>max_export_scene</code>) for any WebXR/AR app.</p>
+        <div class="tag-row"><span class="tag">model-viewer</span><span class="tag">Unreal VR</span><span class="tag">glTF Export</span></div>
       </div>
       <div class="card feature-new">
         <div class="icon">🛰️</div>
@@ -670,42 +669,6 @@
     </div>
   </section>
 
-  <section id="arvr" class="container">
-    <div class="section-head">
-      <div class="eyebrow">Immersive Preview</div>
-      <h2>View a model in AR &amp; VR</h2>
-      <p>A real WebXR viewer, right in this page — no app install. Drag to orbit, tap "View in AR" on a phone, or put on a headset and click "Enter VR".</p>
-    </div>
-
-    <div class="arvr-grid">
-      <div class="arvr-viewer-card">
-        <model-viewer
-          id="arvr-model"
-          src="assets/sample-building.glb"
-          alt="Sample BIM-AZIM building massing model — four colored floors on a ground slab with a roof cap"
-          camera-controls auto-rotate shadow-intensity="1" exposure="0.9"
-          ar ar-modes="webxr scene-viewer" environment-image="neutral"
-        >
-          <button slot="ar-button" class="btn-primary arvr-ar-btn">📱 View in AR</button>
-        </model-viewer>
-        <div class="arvr-controls">
-          <button id="arvr-vr-btn" class="btn-secondary">🥽 Enter VR</button>
-          <span id="arvr-vr-status" class="arvr-status"></span>
-        </div>
-        <p class="arvr-caption">Sample model generated for this demo — a stand-in for a real exported BIM model, in BIM-AZIM's own brand colors.</p>
-      </div>
-
-      <div class="arvr-info-card">
-        <h3>How this maps to the tool</h3>
-        <ul class="arvr-list">
-          <li><strong>Unreal Engine</strong> — real native VR. A <code>unreal_play_in_vr</code> tool drops you straight into the live editor scene with a headset.</li>
-          <li><strong>3ds Max</strong> — real native glTF export. <code>max_export_scene</code> can write a <code>.glb</code> you can drop straight into this viewer or any WebXR/AR app.</li>
-          <li><strong>Revit, Navisworks, AutoCAD, SketchUp</strong> — their public APIs don't expose a glTF/USDZ exporter directly (see <code>docs/ARCHITECTURE.md</code>). Export via FBX/OBJ/DWG today, convert with a tool like Blender, then drop the result in here.</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
   <section id="install" class="container">
     <div class="section-head">
       <div class="eyebrow">Deployment</div>
@@ -795,6 +758,5 @@ dotnet build
   </footer>
 
   <script src="script.js"></script>
-  <script type="module" src="arvr.js"></script>
 </body>
 </html>

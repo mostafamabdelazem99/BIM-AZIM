@@ -711,31 +711,6 @@ section { padding: 76px 0; }
 }
 .roster-footnote { font-size: 12px; color: var(--text-faint); margin: 0; }
 
-/* ---------- AR/VR preview ---------- */
-.arvr-grid {
-  display: grid; grid-template-columns: 1.4fr 1fr; gap: 1px;
-  max-width: 1040px; margin: 0 auto; align-items: stretch;
-  background: var(--border); border: 1px solid var(--border);
-}
-@media (max-width: 860px) {
-  .arvr-grid { grid-template-columns: 1fr; }
-}
-.arvr-viewer-card, .arvr-info-card { background: var(--bg-card); padding: 20px; }
-model-viewer {
-  width: 100%; height: 380px; background: var(--code-bg); display: block;
-  --poster-color: var(--code-bg);
-}
-.arvr-ar-btn {
-  position: absolute; bottom: 16px; right: 16px;
-}
-.arvr-controls { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
-.arvr-status { font-size: 12px; color: var(--text-faint); font-family: "IBM Plex Mono", monospace; }
-.arvr-caption { font-size: 12px; color: var(--text-faint); margin: 12px 0 0; }
-.arvr-info-card h3 { margin: 0 0 12px; font-size: 15px; }
-.arvr-list { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-dim); }
-.arvr-list li { margin-bottom: 12px; }
-.arvr-list code { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent-bright); }
-
 /* ---------- Dimension-line divider ---------- */
 .dimension-divider {
   display: flex; align-items: center; justify-content: center;
@@ -821,8 +796,7 @@ footer .status-row span { white-space: nowrap; }
 @keyframes heroGridDrift { from { background-position: 0 0, 0 0; } to { background-position: 320px 320px, -320px 320px; } }
 
 /* Hero 3D preview: a small auto-rotating <model-viewer> giving an immediate, no-click sense that
-   this is a 3D/BIM tool, not just another API wrapper — separate from the full AR/VR viewer
-   further down the page (#arvr), which adds AR/VR buttons and a bigger canvas. */
+   this is a 3D/BIM tool, not just another API wrapper. */
 .hero-3d {
   position: relative; z-index: 1;
   max-width: 420px; margin: 0 auto 40px;
