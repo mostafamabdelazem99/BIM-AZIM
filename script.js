@@ -46,13 +46,14 @@
     vectorworks: "Vectorworks",
     agi32: "AGi32",
     hammer: "Bentley HAMMER",
+    bridges: "Cross-Engine Bridges",
     office: "Office",
   };
   const ENGINE_ORDER = [
     "revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal",
     "sap2000", "etabs", "safe", "robot",
     "etap", "epanet", "iesve", "archicad", "vectorworks", "agi32", "hammer",
-    "office",
+    "bridges", "office",
   ];
 
   function render(catalog) {
