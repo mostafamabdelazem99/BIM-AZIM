@@ -767,3 +767,63 @@ footer .status-row span { white-space: nowrap; }
   .stat:nth-child(2) { border-left: none; }
   .tool-list { grid-template-columns: 1fr; }
 }
+
+/* ---------- Motion: scroll-reveal, hover lift, nav elevation, hero drift ---------- */
+/* .reveal starts hidden/offset; script.js adds .is-visible via IntersectionObserver as each
+   section scrolls into view. A --reveal-delay custom property (set per-element in script.js)
+   staggers siblings in the same grid instead of popping them all in at once. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* Card hover: a slight zoom + shadow reads as "lift" without the grid's flush 1px-gap seams
+   opening up the way a translateY lift would. z-index keeps the scaled card above its neighbors. */
+.card, .engine-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+.card:hover, .engine-card:hover {
+  transform: scale(1.035);
+  box-shadow: var(--shadow);
+  z-index: 3;
+  background-color: color-mix(in srgb, var(--bg-card) 90%, var(--accent) 10%);
+}
+.card .icon { transition: transform 0.25s ease; }
+.card:hover .icon { transform: scale(1.1) rotate(-4deg); }
+.engine-icon { transition: transform 0.25s ease; }
+.engine-card:hover .engine-icon { transform: scale(1.12); }
+
+/* Buttons: a touch of lift + glow instead of just a color swap. */
+.btn-primary, .btn-secondary {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.btn-primary:hover, .btn-secondary:hover { transform: translateY(-2px); }
+.btn-primary:hover { box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 45%, transparent); }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent-bright); }
+
+/* Nav links + "NEW" pills: smooth state changes instead of instant swaps; NEW pills get a slow,
+   gentle pulse so new-engine cards actually draw the eye without being distracting. */
+.nav-links a { transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease; }
+.nav { transition: box-shadow 0.25s ease, background-color 0.25s ease; }
+.nav.nav--scrolled { box-shadow: 0 2px 14px rgba(10, 30, 45, 0.12); }
+.pill.new { animation: pillGlow 2.8s ease-in-out infinite; }
+@keyframes pillGlow {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tekla-accent) 35%, transparent); }
+  50% { box-shadow: 0 0 0 5px transparent; }
+}
+
+/* Hero blueprint grid: a very slow diagonal drift so the background reads as "alive" rather than
+   a static print — subtle enough to not distract from the heading on top of it. */
+.hero::before { animation: heroGridDrift 50s linear infinite; }
+@keyframes heroGridDrift { from { background-position: 0 0, 0 0; } to { background-position: 320px 320px, -320px 320px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .card:hover, .engine-card:hover { transform: none; }
+  .btn-primary:hover, .btn-secondary:hover { transform: none; }
+  .pill.new { animation: none; }
+  .hero::before { animation: none; }
+}

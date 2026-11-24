@@ -399,3 +399,51 @@
 
   loadRoster();
 })();
+
+// Scroll-reveal: fade/rise-in for section headers, feature cards, engine cards, and the
+// architecture/install blocks as they enter the viewport. Pure CSS transition triggered by an
+// IntersectionObserver adding .is-visible — see the .reveal rules in styles.css. Skips anything
+// already inside the hero (visible on load) and respects prefers-reduced-motion by doing nothing
+// (the CSS fallback there shows everything immediately regardless).
+(function () {
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const targets = document.querySelectorAll(
+    ".section-head, .grid-3 .card, .player, .sim, .arch-flow, .install-step, .tools-tabs, .tools-search-row"
+  );
+  if (!targets.length) return;
+
+  if (reduceMotion) {
+    targets.forEach((el) => el.classList.add("is-visible"));
+    return;
+  }
+
+  targets.forEach((el, i) => {
+    el.classList.add("reveal");
+    // Stagger siblings within the same grid so cards cascade rather than popping in unison;
+    // reset every 8th so a very long list (e.g. install steps) doesn't end up with a multi-second tail.
+    el.style.setProperty("--reveal-delay", `${(i % 8) * 70}ms`);
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
+  targets.forEach((el) => observer.observe(el));
+})();
+
+// Nav bar: add a shadow + slightly denser background once the page has scrolled past the hero
+// badge, so the sticky nav reads as "elevated" over content instead of flat the whole way down.
+(function () {
+  const nav = document.querySelector(".nav");
+  if (!nav) return;
+  const update = () => nav.classList.toggle("nav--scrolled", window.scrollY > 24);
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+})();
