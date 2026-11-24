@@ -39,9 +39,21 @@
     etabs: "ETABS",
     safe: "SAFE",
     robot: "Robot Structural Analysis",
+    etap: "ETAP",
+    epanet: "EPANET",
+    iesve: "IES VE",
+    archicad: "ArchiCAD",
+    vectorworks: "Vectorworks",
+    agi32: "AGi32",
+    hammer: "Bentley HAMMER",
     office: "Office",
   };
-  const ENGINE_ORDER = ["revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal", "sap2000", "etabs", "safe", "robot", "office"];
+  const ENGINE_ORDER = [
+    "revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal",
+    "sap2000", "etabs", "safe", "robot",
+    "etap", "epanet", "iesve", "archicad", "vectorworks", "agi32", "hammer",
+    "office",
+  ];
 
   function render(catalog) {
     if (totalCountEl) totalCountEl.textContent = catalog.length;

@@ -42,12 +42,13 @@
 
   <header id="top" class="hero container">
     <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
-    <h1>One Server. <span class="grad">Eleven Engines.</span><br/>Zero Guesswork.</h1>
+    <h1>One Server. <span class="grad">Eighteen Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
       A single MCP server drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp,
-      3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap
-      point-cloud data and direct Microsoft Office output — from one conversation, with the same
-      precision an engineering drawing demands.
+      3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET,
+      IES VE, ArchiCAD, Vectorworks, and AGi32 — architecture, structural, HVAC, plumbing,
+      electrical, and low-current, all from one conversation, with the same precision an
+      engineering drawing demands.
     </p>
     <div class="hero-ctas">
       <a class="btn-primary" href="#install">Launch Console</a>
@@ -55,8 +56,8 @@
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num" data-count="472">0</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num" data-count="11">0</div><div class="label">BIM &amp; CAD Engines</div></div>
+      <div class="stat"><div class="num" data-count="500">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="18">0</div><div class="label">BIM &amp; CAD Engines</div></div>
       <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
@@ -128,6 +129,48 @@
         <p class="ver">External RobotOM bridge · late-bound COM</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">EP</div>
+        <h3>EPANET</h3>
+        <p class="ver">Open-source Toolkit DLL via ctypes · plumbing</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">AC</div>
+        <h3>ArchiCAD</h3>
+        <p class="ver">Built-in JSON command interface · architecture</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">VE</div>
+        <h3>IES Virtual Environment</h3>
+        <p class="ver">Embedded Python console · HVAC analysis</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">ET</div>
+        <h3>ETAP</h3>
+        <p class="ver">Late-bound COM · electrical/low-current</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">VW</div>
+        <h3>Vectorworks</h3>
+        <p class="ver">Embedded Python console · architecture</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">AG</div>
+        <h3>AGi32</h3>
+        <p class="ver">Late-bound COM · lighting/low-current</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">BH</div>
+        <h3>Bentley HAMMER</h3>
+        <p class="ver">Documented skeleton · plumbing (needs OpenFlows SDK)</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
 
@@ -169,14 +212,14 @@
             </svg>
           </div>
           <div class="scene-copy">
-            <h3>One MCP server, eleven engines</h3>
+            <h3>One MCP server, eighteen engines</h3>
             <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, 3ds Max, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all eleven.)</p>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
           <div class="scene-visual count-visual">
-            <div class="big-count" data-target="472">0</div>
+            <div class="big-count" data-target="500">0</div>
             <div class="count-chips">
               <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
               <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
@@ -185,7 +228,7 @@
             </div>
           </div>
           <div class="scene-copy">
-            <h3>472 real MCP tools</h3>
+            <h3>500 real MCP tools</h3>
             <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements (or, for Word/Excel/PowerPoint, a real document generator), verified against building source.</p>
           </div>
         </div>
@@ -397,7 +440,7 @@
   <section id="features" class="container">
     <div class="section-head">
       <div class="eyebrow">Features</div>
-      <h2>Everything you need to train eleven engines</h2>
+      <h2>Everything you need to train eighteen engines</h2>
       <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, AR/VR preview, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
@@ -427,7 +470,7 @@
       </div>
       <div class="card">
         <div class="icon">🧭</div>
-        <h3>Eleven Parallel Engines</h3>
+        <h3>Eighteen Parallel Engines</h3>
         <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process — see why in the architecture docs.</p>
         <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span></div>
       </div>
@@ -467,6 +510,12 @@
         <p>SAP2000, ETABS, and SAFE share one late-bound COM bridge (they all expose the same CSI OAPI); Robot Structural Analysis gets its own bridge for its distinct RobotOM model. Define geometry, materials, sections, and loads, run the analysis, and pull displacements, forces, and reactions — all from chat.</p>
         <div class="tag-row"><span class="tag">CSI OAPI</span><span class="tag">RobotOM</span><span class="tag">Late-Bound COM</span></div>
       </div>
+      <div class="card feature-new">
+        <div class="icon">🧰</div>
+        <h3>MEP Discipline Coverage <span class="pill new">NEW</span></h3>
+        <p>Architecture (ArchiCAD, Vectorworks), HVAC (IES VE), electrical/low-current (ETAP, AGi32), and plumbing (EPANET, Bentley HAMMER) — each wired the way that program's own extensibility actually works: a built-in JSON port, an embedded Python console, or late-bound COM. Confidence varies by bridge — EPANET and ArchiCAD are solid, real public APIs; ETAP, AGi32, Vectorworks, and IES VE are honest best-effort guesses flagged <code>// VERIFY:</code>; Bentley HAMMER ships as a documented skeleton pending the real OpenFlows SDK.</p>
+        <div class="tag-row"><span class="tag">Architecture</span><span class="tag">HVAC</span><span class="tag">Electrical</span><span class="tag">Plumbing</span><span class="tag">Low Current</span></div>
+      </div>
     </div>
   </section>
 
@@ -474,7 +523,7 @@
     <div class="section-head">
       <div class="eyebrow">Tool Catalog</div>
       <h2>Every MCP tool, by engine</h2>
-      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">472</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
+      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">500</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
     </div>
 
     <div class="tools-search-row">
