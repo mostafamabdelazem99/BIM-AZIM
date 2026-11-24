@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BIM-AZIM — AI Automation Console for Revit, AutoCAD, SketchUp, 3ds Max &amp; More</title>
-  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, ReCap, and Microsoft Office from one engineering-grade automation layer." />
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ReCap, and Microsoft Office from one engineering-grade automation layer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -42,11 +42,12 @@
 
   <header id="top" class="hero container">
     <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
-    <h1>One Server. <span class="grad">Seven Engines.</span><br/>Zero Guesswork.</h1>
+    <h1>One Server. <span class="grad">Eleven Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
       A single MCP server drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp,
-      3ds Max, and Unreal Engine — plus ReCap point-cloud data and direct Microsoft Office output —
-      from one conversation, with the same precision an engineering drawing demands.
+      3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap
+      point-cloud data and direct Microsoft Office output — from one conversation, with the same
+      precision an engineering drawing demands.
     </p>
     <div class="hero-ctas">
       <a class="btn-primary" href="#install">Launch Console</a>
@@ -54,8 +55,8 @@
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num" data-count="349">0</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num" data-count="7">0</div><div class="label">BIM &amp; CAD Engines</div></div>
+      <div class="stat"><div class="num" data-count="472">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="11">0</div><div class="label">BIM &amp; CAD Engines</div></div>
       <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
@@ -103,6 +104,30 @@
         <p class="ver">Python (pymxs) startup script</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">S2</div>
+        <h3>CSI SAP2000</h3>
+        <p class="ver">External OAPI bridge · late-bound COM</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">ET</div>
+        <h3>CSI ETABS</h3>
+        <p class="ver">External OAPI bridge · late-bound COM</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">SF</div>
+        <h3>CSI SAFE</h3>
+        <p class="ver">External OAPI bridge · late-bound COM</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">RB</div>
+        <h3>Robot Structural Analysis</h3>
+        <p class="ver">External RobotOM bridge · late-bound COM</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
 
@@ -144,14 +169,14 @@
             </svg>
           </div>
           <div class="scene-copy">
-            <h3>One MCP server, seven engines</h3>
-            <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, and 3ds Max — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all seven.)</p>
+            <h3>One MCP server, eleven engines</h3>
+            <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, 3ds Max, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all eleven.)</p>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
           <div class="scene-visual count-visual">
-            <div class="big-count" data-target="349">0</div>
+            <div class="big-count" data-target="472">0</div>
             <div class="count-chips">
               <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
               <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
@@ -160,7 +185,7 @@
             </div>
           </div>
           <div class="scene-copy">
-            <h3>349 real MCP tools</h3>
+            <h3>472 real MCP tools</h3>
             <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements (or, for Word/Excel/PowerPoint, a real document generator), verified against building source.</p>
           </div>
         </div>
@@ -248,6 +273,7 @@
         <button class="sim-tab active" data-sim="revit">Revit</button>
         <button class="sim-tab" data-sim="navis">Navisworks</button>
         <button class="sim-tab" data-sim="tekla">Tekla Structures</button>
+        <button class="sim-tab" data-sim="sap2000">SAP2000</button>
       </div>
 
       <div class="sim-window">
@@ -326,6 +352,42 @@
             <div class="sim-msg assistant" data-at="4600">Beam created — HEA200, 6&nbsp;m long. No interferences detected against nearby parts.</div>
           </div>
 
+          <!-- SAP2000 scenario -->
+          <div class="sim-script" data-script="sap2000" hidden>
+            <div class="sim-msg user" data-at="200">Add a frame from (0,0,0) to (0,0,4) using section "W14X90", then run the analysis and get the base reactions</div>
+            <div class="sim-msg call" data-at="1100">
+              <div class="sim-call-label">Calling <code>sap2000_add_frame</code></div>
+              <pre>{
+  "start": { "x": 0, "y": 0, "z": 0 },
+  "end": { "x": 0, "y": 0, "z": 4 },
+  "sectionName": "W14X90"
+}</pre>
+            </div>
+            <div class="sim-msg result" data-at="2000">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "ok": true, "name": "7" }</pre>
+            </div>
+            <div class="sim-msg call" data-at="2700">
+              <div class="sim-call-label">Calling <code>sap2000_run_analysis</code></div>
+              <pre>{}</pre>
+            </div>
+            <div class="sim-msg result" data-at="3600">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "ok": true }</pre>
+            </div>
+            <div class="sim-msg call" data-at="4300">
+              <div class="sim-call-label">Calling <code>sap2000_get_base_reactions</code></div>
+              <pre>{ "loadCase": "DEAD" }</pre>
+            </div>
+            <div class="sim-msg result" data-at="5200">
+              <div class="sim-call-label">Result</div>
+              <pre>{ "ok": true, "results": [
+  { "loadCase": "DEAD", "fz": 12.4, "mx": 0, "my": 0 }
+] }</pre>
+            </div>
+            <div class="sim-msg assistant" data-at="6000">Column added (frame 7, W14X90), analysis ran cleanly, and the DEAD case base reaction is 12.4&nbsp;kip vertical.</div>
+          </div>
+
         </div>
       </div>
       <p class="sim-footnote">Field names and example values are copied directly from <code>server/src/tools/</code> — nothing here is invented for the demo.</p>
@@ -335,7 +397,7 @@
   <section id="features" class="container">
     <div class="section-head">
       <div class="eyebrow">Features</div>
-      <h2>Everything you need to train seven engines</h2>
+      <h2>Everything you need to train eleven engines</h2>
       <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, AR/VR preview, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
@@ -365,9 +427,9 @@
       </div>
       <div class="card">
         <div class="icon">🧭</div>
-        <h3>Seven Parallel Engines</h3>
-        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla and Unreal connect out-of-process — see why in the architecture docs.</p>
-        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span></div>
+        <h3>Eleven Parallel Engines</h3>
+        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process — see why in the architecture docs.</p>
+        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span></div>
       </div>
       <div class="card">
         <div class="icon">🛠️</div>
@@ -399,6 +461,12 @@
         <p>Since Tekla models usually live in Trimble Connect, pushing sync updates and pulling markups is next on the roadmap — a feature no Revit-only tool can offer.</p>
         <div class="tag-row"><span class="tag">Planned</span></div>
       </div>
+      <div class="card feature-new">
+        <div class="icon">🏗️</div>
+        <h3>Structural Analysis Bridges <span class="pill new">NEW</span></h3>
+        <p>SAP2000, ETABS, and SAFE share one late-bound COM bridge (they all expose the same CSI OAPI); Robot Structural Analysis gets its own bridge for its distinct RobotOM model. Define geometry, materials, sections, and loads, run the analysis, and pull displacements, forces, and reactions — all from chat.</p>
+        <div class="tag-row"><span class="tag">CSI OAPI</span><span class="tag">RobotOM</span><span class="tag">Late-Bound COM</span></div>
+      </div>
     </div>
   </section>
 
@@ -406,7 +474,7 @@
     <div class="section-head">
       <div class="eyebrow">Tool Catalog</div>
       <h2>Every MCP tool, by engine</h2>
-      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">411</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
+      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">472</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
     </div>
 
     <div class="tools-search-row">

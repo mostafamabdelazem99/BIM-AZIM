@@ -35,9 +35,13 @@
     sketchup: "SketchUp",
     max: "3ds Max",
     unreal: "Unreal Engine",
+    sap2000: "SAP2000",
+    etabs: "ETABS",
+    safe: "SAFE",
+    robot: "Robot Structural Analysis",
     office: "Office",
   };
-  const ENGINE_ORDER = ["revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal", "office"];
+  const ENGINE_ORDER = ["revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal", "sap2000", "etabs", "safe", "robot", "office"];
 
   function render(catalog) {
     if (totalCountEl) totalCountEl.textContent = catalog.length;
