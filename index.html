@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BIM-AZIM — AI Automation Console for Revit, AutoCAD, SketchUp, 3ds Max &amp; More</title>
-  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET, IES VE, ArchiCAD, Vectorworks, AGi32, Bentley HAMMER, ReCap, and Microsoft Office from one engineering-grade automation layer." />
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET, IES VE, ArchiCAD, Vectorworks, AGi32, Bentley HAMMER, Autodesk Construction Cloud, ReCap, and Microsoft Office from one engineering-grade automation layer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -41,13 +41,13 @@
 
   <header id="top" class="hero container">
     <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
-    <h1>One Server. <span class="grad">Eighteen Engines.</span><br/>Zero Guesswork.</h1>
+    <h1>One Server. <span class="grad">Nineteen Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
       A single MCP server drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp,
       3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET,
-      IES VE, ArchiCAD, Vectorworks, and AGi32 — architecture, structural, HVAC, plumbing,
-      electrical, and low-current, all from one conversation, with the same precision an
-      engineering drawing demands.
+      IES VE, ArchiCAD, Vectorworks, AGi32, and Autodesk Construction Cloud — architecture,
+      structural, HVAC, plumbing, electrical, low-current, and BIM coordination, all from one
+      conversation, with the same precision an engineering drawing demands.
     </p>
     <div class="hero-ctas">
       <a class="btn-primary" href="#install">Launch Console</a>
@@ -68,8 +68,8 @@
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num" data-count="538">0</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num" data-count="18">0</div><div class="label">BIM &amp; CAD Engines</div></div>
+      <div class="stat"><div class="num" data-count="546">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="19">0</div><div class="label">BIM &amp; CAD Engines</div></div>
       <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
@@ -183,6 +183,12 @@
         <p class="ver">Documented skeleton · plumbing (needs OpenFlows SDK)</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">CC</div>
+        <h3>Autodesk Construction Cloud</h3>
+        <p class="ver">Cloud REST API, no local bridge · BIM coordination</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
 
@@ -224,14 +230,14 @@
             </svg>
           </div>
           <div class="scene-copy">
-            <h3>One MCP server, eighteen engines</h3>
+            <h3>One MCP server, nineteen engines</h3>
             <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, 3ds Max, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all eleven.)</p>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
           <div class="scene-visual count-visual">
-            <div class="big-count" data-target="538">0</div>
+            <div class="big-count" data-target="546">0</div>
             <div class="count-chips">
               <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
               <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
@@ -240,7 +246,7 @@
             </div>
           </div>
           <div class="scene-copy">
-            <h3>538 real MCP tools</h3>
+            <h3>546 real MCP tools</h3>
             <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements (or, for Word/Excel/PowerPoint, a real document generator), verified against building source.</p>
           </div>
         </div>
@@ -452,7 +458,7 @@
   <section id="features" class="container">
     <div class="section-head">
       <div class="eyebrow">Features</div>
-      <h2>Everything you need to train eighteen engines</h2>
+      <h2>Everything you need to train nineteen engines</h2>
       <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, a live 3D model preview, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
@@ -482,9 +488,9 @@
       </div>
       <div class="card">
         <div class="icon">🧭</div>
-        <h3>Eighteen Parallel Engines</h3>
-        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process — see why in the architecture docs.</p>
-        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span></div>
+        <h3>Nineteen Parallel Engines</h3>
+        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process; Autodesk Construction Cloud needs no local process at all — it's a cloud API — see why in the architecture docs.</p>
+        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span><span class="tag">ACC</span></div>
       </div>
       <div class="card">
         <div class="icon">🛠️</div>
@@ -534,6 +540,12 @@
         <p>Two tools that orchestrate <em>two</em> engines in one call instead of just forwarding to one: <code>bimazim_sync_revit_to_structural</code> reads Structural Framing/Columns geometry straight out of Revit and creates matching frames/bars in SAP2000, ETABS, SAFE, or Robot — then <code>bimazim_pull_structural_results_to_revit</code> reads analysis results back and writes them onto the original Revit elements as parameters. A real round trip, not just two engines that happen to share an AI client.</p>
         <div class="tag-row"><span class="tag">Revit</span><span class="tag">SAP2000/ETABS/SAFE</span><span class="tag">Robot</span><span class="tag">Round Trip</span></div>
       </div>
+      <div class="card feature-new">
+        <div class="icon">🗂️</div>
+        <h3>Autodesk Construction Cloud <span class="pill new">NEW</span></h3>
+        <p>Every other engine here reaches desktop software. This one reaches where BIM departments actually coordinate day-to-day: list hubs/projects/folders, browse documents, and create or update issues straight from chat — no local plugin, a direct connection to Autodesk Platform Services' public REST API.</p>
+        <div class="tag-row"><span class="tag">Issues</span><span class="tag">Data Management</span><span class="tag">Cloud API</span><span class="tag">BIM Coordination</span></div>
+      </div>
     </div>
   </section>
 
@@ -541,7 +553,7 @@
     <div class="section-head">
       <div class="eyebrow">Tool Catalog</div>
       <h2>Every MCP tool, by engine</h2>
-      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">538</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
+      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">546</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
     </div>
 
     <div class="tools-search-row">
