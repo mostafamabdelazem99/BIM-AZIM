@@ -55,6 +55,19 @@
       <a class="btn-secondary" href="#tekla">See the Tekla Integration</a>
     </div>
 
+    <div class="hero-3d">
+      <model-viewer
+        id="hero-3d-model"
+        src="assets/sample-building.glb"
+        alt="A rotating 3D preview of a sample BIM-AZIM building model"
+        camera-controls disable-zoom disable-pan
+        auto-rotate rotation-per-second="18deg"
+        interaction-prompt="none" shadow-intensity="1" exposure="0.9"
+        environment-image="neutral"
+      ></model-viewer>
+      <p class="hero-3d-caption">Live 3D preview — drag to orbit. Same WebXR viewer used for AR/VR below.</p>
+    </div>
+
     <div class="stat-strip">
       <div class="stat"><div class="num" data-count="538">0</div><div class="label">MCP Tools</div></div>
       <div class="stat"><div class="num" data-count="18">0</div><div class="label">BIM &amp; CAD Engines</div></div>

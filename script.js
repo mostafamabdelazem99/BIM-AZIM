@@ -447,3 +447,11 @@
   update();
   window.addEventListener("scroll", update, { passive: true });
 })();
+
+// 3D model-viewers (hero preview + the full #arvr one): <model-viewer>'s auto-rotate attribute
+// isn't itself gated by prefers-reduced-motion, so drop it here for anyone who's asked for less
+// motion — the model stays, just static until the viewer drags it manually.
+(function () {
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.querySelectorAll("model-viewer[auto-rotate]").forEach((mv) => mv.removeAttribute("auto-rotate"));
+})();

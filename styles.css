@@ -820,6 +820,26 @@ footer .status-row span { white-space: nowrap; }
 .hero::before { animation: heroGridDrift 50s linear infinite; }
 @keyframes heroGridDrift { from { background-position: 0 0, 0 0; } to { background-position: 320px 320px, -320px 320px; } }
 
+/* Hero 3D preview: a small auto-rotating <model-viewer> giving an immediate, no-click sense that
+   this is a 3D/BIM tool, not just another API wrapper — separate from the full AR/VR viewer
+   further down the page (#arvr), which adds AR/VR buttons and a bigger canvas. */
+.hero-3d {
+  position: relative; z-index: 1;
+  max-width: 420px; margin: 0 auto 40px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg-card); box-shadow: var(--shadow);
+  padding: 10px 10px 14px;
+}
+.hero-3d model-viewer {
+  width: 100%; height: 260px; background: var(--code-bg); border-radius: 2px;
+  --poster-color: var(--code-bg);
+}
+.hero-3d-caption { margin: 10px 0 0; font-size: 11.5px; color: var(--text-faint); font-family: "IBM Plex Mono", monospace; }
+@media (max-width: 500px) {
+  .hero-3d { max-width: 100%; }
+  .hero-3d model-viewer { height: 220px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .card:hover, .engine-card:hover { transform: none; }
