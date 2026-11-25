@@ -80,6 +80,7 @@
       const tab = document.createElement("button");
       tab.className = "tab-btn" + (i === 0 ? " active" : "");
       tab.dataset.panel = panelId;
+      tab.dataset.engine = engine;
       tab.textContent = `${ENGINE_LABELS[engine] || engine} (${tools.length})`;
       tabsEl.appendChild(tab);
 
@@ -461,4 +462,45 @@
 (function () {
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   document.querySelectorAll("model-viewer[auto-rotate]").forEach((mv) => mv.removeAttribute("auto-rotate"));
+})();
+
+// Link every engine card in the hero straight to its tab in the Tool Catalog further down the
+// page — clicking "CSI SAP2000" scrolls to #tools and opens the SAP2000 tab, instead of making
+// the visitor scroll down and hunt for it themselves. The Tool Catalog's tabs are built async
+// (script.js fetches tools-catalog.json), so a click before that finishes waits via
+// MutationObserver rather than silently doing nothing.
+(function () {
+  const cards = document.querySelectorAll(".engine-card[data-engine]");
+  const tabsEl = document.getElementById("tools-tabs");
+  const toolsSection = document.getElementById("tools");
+  if (!cards.length || !tabsEl || !toolsSection) return;
+
+  function activateTab(engine) {
+    const tab = tabsEl.querySelector(`.tab-btn[data-engine="${engine}"]`);
+    if (tab) tab.click();
+    return !!tab;
+  }
+
+  function goToEngine(engine) {
+    toolsSection.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    if (activateTab(engine)) return;
+
+    // Tabs not rendered yet (catalog still loading) — watch for them instead of giving up.
+    const observer = new MutationObserver(() => {
+      if (activateTab(engine)) observer.disconnect();
+    });
+    observer.observe(tabsEl, { childList: true });
+    setTimeout(() => observer.disconnect(), 8000); // give up quietly if the catalog fetch failed
+  }
+
+  cards.forEach((card) => {
+    const engine = card.dataset.engine;
+    card.addEventListener("click", () => goToEngine(engine));
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        goToEngine(engine);
+      }
+    });
+  });
 })();

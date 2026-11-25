@@ -498,6 +498,12 @@ a { color: inherit; }
   padding: 22px;
   text-align: left;
   position: relative;
+  cursor: pointer;
+}
+.engine-card:focus-visible {
+  outline: 2px solid var(--accent-bright);
+  outline-offset: -2px;
+  z-index: 3;
 }
 .engine-card.tekla::after {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
