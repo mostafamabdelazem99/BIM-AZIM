@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>BIM-AZIM — AI Automation Console for Revit, AutoCAD, SketchUp, 3ds Max &amp; More</title>
-  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET, IES VE, ArchiCAD, Vectorworks, AGi32, Bentley HAMMER, Autodesk Construction Cloud, ReCap, and Microsoft Office from one engineering-grade automation layer." />
+  <meta name="description" content="BIM-AZIM is an open-source MCP toolkit that drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp, 3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET, IES VE, ArchiCAD, Vectorworks, AGi32, Bentley HAMMER, Autodesk Construction Cloud, Trimble Connect, Procore, Speckle, ReCap, and Microsoft Office from one engineering-grade automation layer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Sans+3:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" />
@@ -41,13 +41,14 @@
 
   <header id="top" class="hero container">
     <div class="badge"><span class="dot"></span> Open Source &amp; Free — Rev. 2026</div>
-    <h1>One Server. <span class="grad">Nineteen Engines.</span><br/>Zero Guesswork.</h1>
+    <h1>One Server. <span class="grad">Twenty-Two Engines.</span><br/>Zero Guesswork.</h1>
     <p class="sub">
       A single MCP server drives Autodesk Revit, Navisworks, Tekla Structures, AutoCAD, SketchUp,
       3ds Max, Unreal Engine, SAP2000, ETABS, SAFE, Robot Structural Analysis, ETAP, EPANET,
-      IES VE, ArchiCAD, Vectorworks, AGi32, and Autodesk Construction Cloud — architecture,
-      structural, HVAC, plumbing, electrical, low-current, and BIM coordination, all from one
-      conversation, with the same precision an engineering drawing demands.
+      IES VE, ArchiCAD, Vectorworks, AGi32, Autodesk Construction Cloud, Trimble Connect, Procore,
+      and Speckle — architecture, structural, HVAC, plumbing, electrical, low-current, and BIM
+      coordination, all from one conversation, with the same precision an engineering drawing
+      demands.
     </p>
     <div class="hero-ctas">
       <a class="btn-primary" href="#install">Launch Console</a>
@@ -68,8 +69,8 @@
     </div>
 
     <div class="stat-strip">
-      <div class="stat"><div class="num" data-count="546">0</div><div class="label">MCP Tools</div></div>
-      <div class="stat"><div class="num" data-count="19">0</div><div class="label">BIM &amp; CAD Engines</div></div>
+      <div class="stat"><div class="num" data-count="562">0</div><div class="label">MCP Tools</div></div>
+      <div class="stat"><div class="num" data-count="22">0</div><div class="label">BIM &amp; CAD Engines</div></div>
       <div class="stat"><div class="num" data-count="10">0</div><div class="label">AI Clients Supported</div></div>
       <div class="stat"><div class="num">MIT</div><div class="label">License</div></div>
     </div>
@@ -189,6 +190,24 @@
         <p class="ver">Cloud REST API, no local bridge · BIM coordination</p>
         <span class="pill new">NEW</span>
       </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">TC</div>
+        <h3>Trimble Connect</h3>
+        <p class="ver">Cloud REST API, no local bridge · BIM coordination</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">PR</div>
+        <h3>Procore</h3>
+        <p class="ver">Cloud REST API, no local bridge · RFIs/punch lists</p>
+        <span class="pill new">NEW</span>
+      </div>
+      <div class="engine-card tekla">
+        <div class="engine-icon">SP</div>
+        <h3>Speckle</h3>
+        <p class="ver">Cloud GraphQL API, open-source · BIM interop</p>
+        <span class="pill new">NEW</span>
+      </div>
     </div>
   </header>
 
@@ -230,14 +249,14 @@
             </svg>
           </div>
           <div class="scene-copy">
-            <h3>One MCP server, nineteen engines</h3>
+            <h3>One MCP server, twenty-two engines</h3>
             <p>Revit, Navisworks, Tekla Structures, Unreal Engine, AutoCAD, SketchUp, 3ds Max, SAP2000, ETABS, SAFE, and Robot Structural Analysis — plus ReCap and Office — driven from a single conversation, instead of a pile of disconnected tools. (Diagram shows the original four; the rack below has all eleven.)</p>
           </div>
         </div>
 
         <div class="scene" data-scene="1">
           <div class="scene-visual count-visual">
-            <div class="big-count" data-target="546">0</div>
+            <div class="big-count" data-target="562">0</div>
             <div class="count-chips">
               <span class="tag">Create</span><span class="tag">Edit</span><span class="tag">Read</span>
               <span class="tag">Clash</span><span class="tag">Export</span><span class="tag">AI Chat</span>
@@ -246,7 +265,7 @@
             </div>
           </div>
           <div class="scene-copy">
-            <h3>546 real MCP tools</h3>
+            <h3>562 real MCP tools</h3>
             <p>Not a demo catalog — every tool here maps to an actual command a real plugin dispatcher implements (or, for Word/Excel/PowerPoint, a real document generator), verified against building source.</p>
           </div>
         </div>
@@ -458,7 +477,7 @@
   <section id="features" class="container">
     <div class="section-head">
       <div class="eyebrow">Features</div>
-      <h2>Everything you need to train nineteen engines</h2>
+      <h2>Everything you need to train twenty-two engines</h2>
       <p>A toolkit that bridges the gap between AI and BIM — structural steel/precast workflows in Tekla, CAD drafting in AutoCAD, modeling in SketchUp and 3ds Max, real-time visualization in Unreal, a live 3D model preview, and Office documents on demand.</p>
     </div>
     <div class="grid-3">
@@ -488,9 +507,9 @@
       </div>
       <div class="card">
         <div class="icon">🧭</div>
-        <h3>Nineteen Parallel Engines</h3>
-        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process; Autodesk Construction Cloud needs no local process at all — it's a cloud API — see why in the architecture docs.</p>
-        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span><span class="tag">ACC</span></div>
+        <h3>Twenty-Two Parallel Engines</h3>
+        <p>Revit, Navisworks, AutoCAD, SketchUp, and 3ds Max each run in-process inside their own host app; Tekla, Unreal, SAP2000, ETABS, SAFE, and Robot connect out-of-process; Autodesk Construction Cloud, Trimble Connect, Procore, and Speckle need no local process at all — they're cloud APIs — see why in the architecture docs.</p>
+        <div class="tag-row"><span class="tag">Revit</span><span class="tag">Navisworks</span><span class="tag">Tekla</span><span class="tag">AutoCAD</span><span class="tag">SketchUp</span><span class="tag">3ds Max</span><span class="tag">Unreal</span><span class="tag">SAP2000</span><span class="tag">ETABS</span><span class="tag">SAFE</span><span class="tag">Robot</span><span class="tag">ACC</span><span class="tag">Trimble</span><span class="tag">Procore</span><span class="tag">Speckle</span></div>
       </div>
       <div class="card">
         <div class="icon">🛠️</div>
@@ -518,9 +537,9 @@
       </div>
       <div class="card feature-new">
         <div class="icon">🌐</div>
-        <h3>Trimble Connect <span class="pill new">ROADMAP</span></h3>
-        <p>Since Tekla models usually live in Trimble Connect, pushing sync updates and pulling markups is next on the roadmap — a feature no Revit-only tool can offer.</p>
-        <div class="tag-row"><span class="tag">Planned</span></div>
+        <h3>Trimble Connect, Procore &amp; Speckle <span class="pill new">NEW</span></h3>
+        <p>Three more cloud-native connectors, same no-local-plugin shape as ACC: Trimble Connect (the natural CDE for Tekla-centric projects — ToDos, folders, and the file-push <code>tekla_push_to_trimble_connect</code> was waiting on), Procore (RFIs and punch items), and Speckle (the one open-source, API-first BIM interop hub — stream/commit browsing, not yet full object send/receive).</p>
+        <div class="tag-row"><span class="tag">Trimble Connect</span><span class="tag">Procore</span><span class="tag">Speckle</span><span class="tag">Open Source</span></div>
       </div>
       <div class="card feature-new">
         <div class="icon">🏗️</div>
@@ -546,6 +565,24 @@
         <p>Every other engine here reaches desktop software. This one reaches where BIM departments actually coordinate day-to-day: list hubs/projects/folders, browse documents, and create or update issues straight from chat — no local plugin, a direct connection to Autodesk Platform Services' public REST API.</p>
         <div class="tag-row"><span class="tag">Issues</span><span class="tag">Data Management</span><span class="tag">Cloud API</span><span class="tag">BIM Coordination</span></div>
       </div>
+      <div class="card feature-new">
+        <div class="icon">🧾</div>
+        <h3>Audit Trail &amp; Dry-Run <span class="pill new">NEW</span></h3>
+        <p>Every tool call is appended to a local, append-only log (tool, args, success, timestamp) — "which AI action touched this model and when" is a real accountability question on regulated projects. The highest-risk write tools (cross-engine structural sync, ACC/Procore/Speckle creates) also accept <code>dryRun: true</code>, reporting exactly what would happen before anything is actually created or overwritten.</p>
+        <div class="tag-row"><span class="tag">audit.log</span><span class="tag">dryRun</span><span class="tag">Accountability</span></div>
+      </div>
+      <div class="card feature-new">
+        <div class="icon">🩺</div>
+        <h3>bimazim_diagnose <span class="pill new">NEW</span></h3>
+        <p>One call instead of piecing together 19 separate connection errors: checks every engine and returns a punch list — which are reachable, and for every one that isn't, the single most useful next step (start this bridge, open that app, set this env var).</p>
+        <div class="tag-row"><span class="tag">Health Check</span><span class="tag">Actionable</span></div>
+      </div>
+      <div class="card feature-new">
+        <div class="icon">💰</div>
+        <h3>5D Quantity Takeoff <span class="pill new">NEW</span></h3>
+        <p><code>bimazim_price_schedule</code> pairs a quantity list from any engine's schedule export with a unit-rate table, matching by exact or fuzzy name, and returns a priced bill of quantities — flagging anything in the takeoff that didn't match a rate. Hand the result to <code>office_create_excel_workbook</code> for a real priced BOQ file.</p>
+        <div class="tag-row"><span class="tag">BOQ</span><span class="tag">Cost</span><span class="tag">Pure Computation</span></div>
+      </div>
     </div>
   </section>
 
@@ -553,7 +590,7 @@
     <div class="section-head">
       <div class="eyebrow">Tool Catalog</div>
       <h2>Every MCP tool, by engine</h2>
-      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">546</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
+      <p>Not a sample — the complete, real catalog: <strong id="tools-total-count">562</strong> tools, read straight out of <code>server/src/tools/</code> and <code>unreal/server/src/index.js</code> (Unreal runs as its own separate MCP server — see <code>docs/ARCHITECTURE.md</code>). Search across the current tab, or switch engines.</p>
     </div>
 
     <div class="tools-search-row">

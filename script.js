@@ -47,14 +47,20 @@
     agi32: "AGi32",
     hammer: "Bentley HAMMER",
     acc: "Autodesk Construction Cloud",
+    trimble: "Trimble Connect",
+    procore: "Procore",
+    speckle: "Speckle",
     bridges: "Cross-Engine Bridges",
+    qto: "5D Quantity Takeoff",
+    diagnose: "Diagnostics",
     office: "Office",
   };
   const ENGINE_ORDER = [
     "revit", "navisworks", "tekla", "autocad", "sketchup", "max", "unreal",
     "sap2000", "etabs", "safe", "robot",
-    "etap", "epanet", "iesve", "archicad", "vectorworks", "agi32", "hammer", "acc",
-    "bridges", "office",
+    "etap", "epanet", "iesve", "archicad", "vectorworks", "agi32", "hammer",
+    "acc", "trimble", "procore", "speckle",
+    "bridges", "qto", "diagnose", "office",
   ];
 
   function render(catalog) {
